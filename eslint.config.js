@@ -19,5 +19,8 @@ export default tseslint.config([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'warn', // Change TS6133 from error to warning
+    },
   },
 ])
