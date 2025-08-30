@@ -12,6 +12,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  ListItemIcon,
   Toolbar,
   Typography,
   Card,
@@ -25,6 +26,19 @@ import {
   TableHead,
   TableRow
 } from "@mui/material";
+import {
+  Dashboard as DashboardIcon,
+  People as PeopleIcon,
+  ShoppingCart as ShoppingCartIcon,
+  Receipt as ReceiptIcon,
+  Settings as SettingsIcon,
+  MonetizationOn as MonetizationOnIcon,
+  ShoppingBasket as ShoppingBasketIcon,
+  Person as PersonIcon,
+  Inventory as InventoryIcon,
+  AdminPanelSettings as AdminPanelSettingsIcon,
+  Logout as LogoutIcon
+} from '@mui/icons-material';
 
 function App() {
   const [selectedMenu, setSelectedMenu] = useState('dashboard');
@@ -37,13 +51,13 @@ function App() {
     { id: 4, customer: 'Alice Brown', date: '2023-10-12', status: 'Completed', amount: '$65.25' },
   ];
 
-  // Navigation items
+  // Navigation items with icons
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard' },
-    { id: 'users', label: 'Users' },
-    { id: 'products', label: 'Products' },
-    { id: 'orders', label: 'Orders' },
-    { id: 'settings', label: 'Settings' },
+    { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
+    { id: 'users', label: 'Users', icon: <PeopleIcon /> },
+    { id: 'products', label: 'Products', icon: <InventoryIcon /> },
+    { id: 'orders', label: 'Orders', icon: <ReceiptIcon /> },
+    { id: 'settings', label: 'Settings', icon: <SettingsIcon /> },
   ];
 
   // Render content based on selected menu
@@ -61,9 +75,14 @@ function App() {
               <GridLegacy item xs={12} sm={6} md={3}>
                 <Card className="dashboard-card">
                   <CardContent>
-                    <Typography color="textSecondary" gutterBottom>
-                      Total Sales
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                      <IconButton color="primary" aria-label="total sales">
+                        <MonetizationOnIcon />
+                      </IconButton>
+                      <Typography color="textSecondary" gutterBottom sx={{ ml: 1, mb: 0 }}>
+                        Total Sales
+                      </Typography>
+                    </Box>
                     <Typography variant="h5">
                       $12,345.67
                     </Typography>
@@ -74,9 +93,14 @@ function App() {
               <GridLegacy item xs={12} sm={6} md={3}>
                 <Card className="dashboard-card">
                   <CardContent>
-                    <Typography color="textSecondary" gutterBottom>
-                      New Orders
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                      <IconButton color="primary" aria-label="new orders">
+                        <ShoppingCartIcon />
+                      </IconButton>
+                      <Typography color="textSecondary" gutterBottom sx={{ ml: 1, mb: 0 }}>
+                        New Orders
+                      </Typography>
+                    </Box>
                     <Typography variant="h5">
                       25
                     </Typography>
@@ -87,9 +111,14 @@ function App() {
               <GridLegacy item xs={12} sm={6} md={3}>
                 <Card className="dashboard-card">
                   <CardContent>
-                    <Typography color="textSecondary" gutterBottom>
-                      Total Customers
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                      <IconButton color="primary" aria-label="total customers">
+                        <PersonIcon />
+                      </IconButton>
+                      <Typography color="textSecondary" gutterBottom sx={{ ml: 1, mb: 0 }}>
+                        Total Customers
+                      </Typography>
+                    </Box>
                     <Typography variant="h5">
                       1,234
                     </Typography>
@@ -100,9 +129,14 @@ function App() {
               <GridLegacy item xs={12} sm={6} md={3}>
                 <Card className="dashboard-card">
                   <CardContent>
-                    <Typography color="textSecondary" gutterBottom>
-                      Products
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                      <IconButton color="primary" aria-label="products">
+                        <ShoppingBasketIcon />
+                      </IconButton>
+                      <Typography color="textSecondary" gutterBottom sx={{ ml: 1, mb: 0 }}>
+                        Products
+                      </Typography>
+                    </Box>
                     <Typography variant="h5">
                       567
                     </Typography>
@@ -114,9 +148,14 @@ function App() {
               <GridLegacy item xs={12}>
                 <Card className="dashboard-card">
                   <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      Recent Orders
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                      <IconButton color="primary" aria-label="recent orders">
+                        <ReceiptIcon />
+                      </IconButton>
+                      <Typography variant="h6" gutterBottom sx={{ ml: 1, mb: 0 }}>
+                        Recent Orders
+                      </Typography>
+                    </Box>
                     <TableContainer component={Paper}>
                       <Table>
                         <TableHead>
@@ -167,10 +206,20 @@ function App() {
       {/* Header */}
       <AppBar position="static">
         <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="admin dashboard"
+            sx={{ mr: 2 }}
+          >
+            <AdminPanelSettingsIcon />
+          </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Admin Dashboard
           </Typography>
-          <Button color="inherit">Logout</Button>
+          <IconButton color="inherit" aria-label="logout">
+            <LogoutIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -199,6 +248,9 @@ function App() {
                     selected={selectedMenu === item.id}
                     onClick={() => setSelectedMenu(item.id)}
                   >
+                    <ListItemIcon>
+                      {item.icon}
+                    </ListItemIcon>
                     <ListItemText primary={item.label} />
                   </ListItemButton>
                 </ListItem>
