@@ -239,8 +239,7 @@ function App() {
             },
           }}
         >
-          <Toolbar />
-          <Box sx={{ overflow: 'auto' }}>
+          <Box sx={{ overflow: 'auto', height: '100%' }}>
             <List>
               {navItems.map((item) => (
                 <ListItem key={item.id} disablePadding>
@@ -256,7 +255,6 @@ function App() {
                 </ListItem>
               ))}
             </List>
-            <Divider />
           </Box>
         </Drawer>
 
