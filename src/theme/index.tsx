@@ -1,6 +1,7 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ThemeModeContext } from './ThemeModeContext';
 
 // Define theme colors
 const lightThemeColors = {
@@ -45,16 +46,6 @@ const darkThemeColors = {
   },
 };
 
-// Create context for theme mode
-interface ThemeModeContextType {
-  toggleColorMode: () => void;
-  mode: 'light' | 'dark';
-}
-
-export const ThemeModeContext = createContext<ThemeModeContextType>({
-  toggleColorMode: () => {},
-  mode: 'light',
-});
 
 // Theme provider component
 interface ThemeProviderWrapperProps {
@@ -62,7 +53,25 @@ interface ThemeProviderWrapperProps {
 }
 
 export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ children }) => {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  // Get initial color scheme from browser preference
+  const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const [mode, setMode] = useState<'light' | 'dark'>(prefersDarkMode ? 'dark' : 'light');
+
+  // Listen for changes in color scheme preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setMode(e.matches ? 'dark' : 'light');
+    };
+
+    // Add event listener
+    mediaQuery.addEventListener('change', handleChange);
+
+    // Clean up
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
 
   const colorMode = useMemo(
     () => ({
@@ -135,8 +144,5 @@ export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ chil
     </ThemeModeContext.Provider>
   );
 };
-
-// Hook to use theme mode
-export const useThemeMode = () => useContext(ThemeModeContext);
 
 export default ThemeProviderWrapper;

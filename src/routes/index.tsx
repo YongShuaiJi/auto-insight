@@ -31,13 +31,6 @@ const routes: Route[] = [
     component: Dashboard
   },
   {
-    id: 'users',
-    path: '/users',
-    label: 'Users',
-    icon: <PeopleIcon />,
-    component: Users
-  },
-  {
     id: 'products',
     path: '/products',
     label: 'Products',
@@ -50,6 +43,13 @@ const routes: Route[] = [
     label: 'Orders',
     icon: <ReceiptIcon />,
     component: Orders
+  },
+  {
+    id: 'users',
+    path: '/users',
+    label: 'Users',
+    icon: <PeopleIcon />,
+    component: Users
   },
   {
     id: 'settings',

@@ -27,7 +27,7 @@ const Dashboard: React.FC<DashboardProps> = ({ recentOrders = [] }) => {
   return (
     <>
       <Typography variant="h4" gutterBottom>
-        仪表盘
+        概览
       </Typography>
 
       <Grid container spacing={3}>
