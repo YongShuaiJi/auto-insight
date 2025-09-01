@@ -14,7 +14,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({
   children,
-  title = "流量回放中枢",
+  title = "测试中枢",
   navItems,
   selectedItem,
   onItemSelect,

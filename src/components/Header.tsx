@@ -7,7 +7,7 @@ import {
   Tooltip
 } from "@mui/material";
 import {
-  AdminPanelSettings as AdminPanelSettingsIcon,
+  Hub as HubIcon,
   Logout as LogoutIcon,
   Brightness4 as DarkModeIcon,
   Brightness7 as LightModeIcon
@@ -20,7 +20,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ 
-  title = "Admin Dashboard",
+  title = "测试中枢",
   onLogout = () => console.log("Logout clicked") 
 }) => {
   // Get theme mode and toggle function
@@ -32,10 +32,10 @@ const Header: React.FC<HeaderProps> = ({
         <IconButton
           edge="start"
           color="inherit"
-          aria-label="admin dashboard"
+          aria-label="test central hub"
           sx={{ mr: 2 }}
         >
-          <AdminPanelSettingsIcon />
+          <HubIcon />
         </IconButton>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           {title}
