@@ -69,18 +69,36 @@ export const getRouteById = (id: string): Route | undefined => {
 
 // Helper function to render component by route ID
 export const renderRouteById = (id: string): React.ReactNode => {
-  const route = getRouteById(id);
-  if (!route) return null;
+  try {
+    console.log('Rendering route by ID:', id);
 
-  const Component = route.component;
-  // Pass recentOrders to Dashboard component
-  if (id === 'dashboard') {
-    return <Component recentOrders={[
-      { id: 1, customer: 'John Doe', date: '2023-10-15', status: 'Completed', amount: '$120.00' },
-      { id: 2, customer: 'Jane Smith', date: '2023-10-14', status: 'Processing', amount: '$85.50' },
-      { id: 3, customer: 'Bob Johnson', date: '2023-10-13', status: 'Pending', amount: '$220.75' },
-      { id: 4, customer: 'Alice Brown', date: '2023-10-12', status: 'Completed', amount: '$65.25' },
-    ]} />;
+    const route = getRouteById(id);
+    console.log('Found route:', route);
+
+    if (!route) {
+      console.warn('No route found for ID:', id);
+      return <div>No route found for ID: {id}</div>;
+    }
+
+    const Component = route.component;
+    console.log('Component for route:', Component);
+
+    // Pass recentOrders to Dashboard component
+    if (id === 'dashboard') {
+      const recentOrders = [
+        { id: 1, customer: 'John Doe', date: '2023-10-15', status: 'Completed', amount: '$120.00' },
+        { id: 2, customer: 'Jane Smith', date: '2023-10-14', status: 'Processing', amount: '$85.50' },
+        { id: 3, customer: 'Bob Johnson', date: '2023-10-13', status: 'Pending', amount: '$220.75' },
+        { id: 4, customer: 'Alice Brown', date: '2023-10-12', status: 'Completed', amount: '$65.25' },
+      ];
+      console.log('Rendering dashboard with recentOrders:', recentOrders);
+      return <Component recentOrders={recentOrders} />;
+    }
+
+    console.log('Rendering component for route:', route.id);
+    return <Component />;
+  } catch (error) {
+    console.error('Error in renderRouteById:', error);
+    return <div style={{ color: 'red' }}>Error rendering route: {error.message}</div>;
   }
-  return <Component />;
 };

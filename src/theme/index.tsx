@@ -6,9 +6,9 @@ import { ThemeModeContext } from './ThemeModeContext';
 // Define theme colors
 const lightThemeColors = {
   primary: {
-    main: '#1976d2',
-    light: '#42a5f5',
-    dark: '#1565c0',
+    main: '#007FFF',
+    light: '#66B2FF',
+    dark: '#0059B2',
     contrastText: '#fff',
   },
   secondary: {
@@ -25,9 +25,9 @@ const lightThemeColors = {
 
 const darkThemeColors = {
   primary: {
-    main: '#90caf9',
-    light: '#e3f2fd',
-    dark: '#42a5f5',
+    main: '#66B2FF',
+    light: '#99CCFF',
+    dark: '#0059B2',
     contrastText: '#000',
   },
   secondary: {
@@ -105,6 +105,15 @@ export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ chil
           ].join(','),
         },
         components: {
+          MuiAppBar: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                backgroundColor: theme.palette.mode === 'light' 
+                  ? '#0066CC' // Blue background for AppBar in light mode only
+                  : undefined, // Use default dark theme color in dark mode
+              }),
+            },
+          },
           MuiCssBaseline: {
             styleOverrides: {
               body: {

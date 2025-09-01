@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, CssBaseline } from "@mui/material";
 import Header from './Header';
 import Sidebar, {type NavItem} from './Sidebar';
+import type { Product } from '../services/api.ts';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,6 +11,8 @@ interface LayoutProps {
   selectedItem: string;
   onItemSelect: (id: string) => void;
   onLogout?: () => void;
+  selectedProduct?: Product | null;
+  onProductSelect?: (product: Product) => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({
@@ -18,15 +21,22 @@ const Layout: React.FC<LayoutProps> = ({
   navItems,
   selectedItem,
   onItemSelect,
-  onLogout
+  onLogout,
+  selectedProduct,
+  onProductSelect
 }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <CssBaseline />
-      
+
       {/* Header */}
-      <Header title={title} onLogout={onLogout} />
-      
+      <Header 
+        title={title} 
+        onLogout={onLogout} 
+        selectedProduct={selectedProduct}
+        onProductSelect={onProductSelect}
+      />
+
       {/* Main Content */}
       <Box className="app-container">
         {/* Sidebar */}
@@ -35,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({
           selectedItem={selectedItem} 
           onItemSelect={onItemSelect} 
         />
-        
+
         {/* Main Content Area */}
         <Box className="main-content">
           {children}

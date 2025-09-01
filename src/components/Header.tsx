@@ -13,15 +13,21 @@ import {
   Brightness7 as LightModeIcon
 } from '@mui/icons-material';
 import { useThemeMode } from '../theme/ThemeModeContext';
+import ProductDropdown from './ProductDropdown';
+import type { Product } from '../services/api.ts';
 
 interface HeaderProps {
   title?: string;
   onLogout?: () => void;
+  selectedProduct?: Product | null;
+  onProductSelect?: (product: Product) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
   title = "测试中枢",
-  onLogout = () => console.log("Logout clicked") 
+  onLogout = () => console.log("Logout clicked"),
+  selectedProduct = null,
+  onProductSelect = (product) => console.log("Product selected:", product)
 }) => {
   // Get theme mode and toggle function
   const { mode, toggleColorMode } = useThemeMode();
@@ -37,9 +43,18 @@ const Header: React.FC<HeaderProps> = ({
         >
           <HubIcon />
         </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ mr: 2 }}>
           {title}
         </Typography>
+
+        {/* Product Dropdown */}
+        <ProductDropdown 
+          selectedProduct={selectedProduct} 
+          onProductSelect={onProductSelect} 
+        />
+
+        <div style={{ flexGrow: 1 }}></div>
+
         <Tooltip title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
           <IconButton color="inherit" onClick={toggleColorMode} sx={{ mr: 1 }}>
             {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
