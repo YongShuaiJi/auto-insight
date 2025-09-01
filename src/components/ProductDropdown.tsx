@@ -100,14 +100,14 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                 ...(open && {
                   backgroundColor:
                       mode === 'light'
-                          ? 'translucent white (16%)' /* rgba(255, 255, 255, 0.16) */
+                          ? 'translucent white (16%)'
                           : alpha(theme.palette.primary.main, 0.25),
                 }),
               }}
           >
             <Typography
                 variant="body1"
-                sx={{ fontWeight: 600, letterSpacing: '0.02em', fontSize: '1.25rem' }}
+                sx={{ fontWeight: 600, letterSpacing: '0.02em', fontSize: '1.15rem' }}
             >
               {selectedProduct ? selectedProduct.name : '选择产品'}
             </Typography>
@@ -117,36 +117,22 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': 'product-button',
-              sx: {
-                py: 0.75,
-              },
-            }}
-            PaperProps={{
-              elevation: 6,
-              sx: {
-                mt: 2.5,
-                transform: 'translateY(0px)', // 不再下移
-                minWidth: 350,
-                overflow: 'visible',
-                borderRadius: 1,
-                border: '1px solid',
-                borderColor:
-                    mode === 'light'
-                        ? 'translucent black (8%)' /* rgba(0, 0, 0, 0.08) */
-                        : 'translucent dark reddish-brown (8%)' /* rgba(62, 13, 13, 0.08) */,
-                backgroundImage: 'none',
-                '&:before': {
-                  display: 'none', // Remove the arrow
-                },
-              },
-            }}
             transformOrigin={{ horizontal: 'left', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
             slotProps={{
               paper: {
+                elevation: 6,
+                'aria-labelledby': 'product-button',
                 sx: {
+                  mt: 1,
+                  py: 0.75,
+                  minWidth: 350,
+                  overflow: 'visible',
+                  borderRadius: 2,
+                  backgroundImage: 'none',
+                    '&:before': {
+                        display: 'none', // Remove the arrow
+                    },
                   backgroundColor:
                       mode === 'light' ? 'dodgerblue' /* #0066CC */ : 'very dark gray' /* #1e1e1e */,
                   boxShadow:
