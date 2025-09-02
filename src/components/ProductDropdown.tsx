@@ -102,6 +102,9 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                       mode === 'light'
                           ? 'translucent white (16%)'
                           : alpha(theme.palette.primary.main, 0.25),
+                  boxShadow: mode === 'light'
+                      ? '0px 5px 15px rgba(0, 0, 0, 0.3)'
+                      : undefined,
                 }),
               }}
           >
@@ -137,7 +140,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                       mode === 'light' ? 'dodgerblue' /* #0066CC */ : 'very dark gray' /* #1e1e1e */,
                   boxShadow:
                       mode === 'light'
-                          ? '0px 4px 20px translucent gray-blue (30%)' /* rgba(170, 180, 190, 0.3) */
+                          ? '0px 4px 20px translucent gray-blue (30%)'
                           : '0px 4px 20px translucent black (50%)' /* rgba(0, 0, 0, 0.5) */,
                   color: mode === 'light' ? 'white' /* #FFFFFF */ : undefined,
                 },
@@ -178,11 +181,11 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                     '&:hover': {
                       backgroundColor:
                           mode === 'light'
-                              ? 'translucent white (10%)' /* rgba(255, 255, 255, 0.1) */
-                              : 'translucent white (8%)' /* rgba(255, 255, 255, 0.08) */,
+                              ? 'translucent white (10%)'
+                              : 'translucent white (8%)'
                     },
                     transition: theme.transitions.create(
-                        ['background-color', 'color'],
+                        ['background-color', 'color', 'box-shadow'],
                         {
                           duration: theme.transitions.duration.shortest,
                         }
