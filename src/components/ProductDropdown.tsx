@@ -90,7 +90,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                 '&:hover': {
                   backgroundColor:
                       mode === 'light'
-                          ? 'translucent white (8%)' /* rgba(255, 255, 255, 0.08) */
+                          ? alpha(theme.palette.primary.main, 0.4)
                           : alpha(theme.palette.primary.main, 0.15),
                 },
                 '&:focus': {
@@ -100,7 +100,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                 ...(open && {
                   backgroundColor:
                       mode === 'light'
-                          ? 'translucent white (16%)'
+                          ? alpha(theme.palette.primary.main, 0.16)
                           : alpha(theme.palette.primary.main, 0.25),
                   boxShadow: mode === 'light'
                       ? '0px 5px 15px rgba(0, 0, 0, 0.3)'
@@ -137,12 +137,12 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                         display: 'none', // Remove the arrow
                     },
                   backgroundColor:
-                      mode === 'light' ? 'dodgerblue' /* #0066CC */ : 'very dark gray' /* #1e1e1e */,
+                      mode === 'light' ? '#f5f5f5' : '#1e1e1e',
                   boxShadow:
                       mode === 'light'
-                          ? '0px 4px 20px translucent gray-blue (30%)'
-                          : '0px 4px 20px translucent black (50%)' /* rgba(0, 0, 0, 0.5) */,
-                  color: mode === 'light' ? 'white' /* #FFFFFF */ : undefined,
+                          ? '0px 4px 20px rgba(0, 102, 204, 0.2)'
+                          : '0px 4px 20px rgba(0, 0, 0, 0.5)',
+                  color: mode === 'light' ? undefined : undefined,
                 },
               },
             }}
@@ -160,29 +160,29 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                     py: 1.25,
                     fontSize: '1rem',
                     fontWeight: selectedProduct?.id === product.id ? 600 : 500,
-                    color: mode === 'light' ? 'white' /* #FFFFFF */ : 'text.primary',
+                    color: mode === 'light' ? '#333333' : 'text.primary',
                     minHeight: 48,
                     '&.Mui-selected': {
                       backgroundColor:
                           mode === 'light'
-                              ? 'translucent white (20%)' /* rgba(255, 255, 255, 0.2) */
+                              ? alpha(theme.palette.primary.main, 0.12)
                               : alpha(theme.palette.primary.main, 0.16),
                       color:
                           mode === 'light'
-                              ? 'white' /* #FFFFFF */
+                              ? theme.palette.primary.main
                               : theme.palette.primary.main,
                       '&:hover': {
                         backgroundColor:
                             mode === 'light'
-                                ? 'translucent white (30%)' /* rgba(255, 255, 255, 0.3) */
+                                ? alpha(theme.palette.primary.main, 0.18)
                                 : alpha(theme.palette.primary.main, 0.24),
                       },
                     },
                     '&:hover': {
                       backgroundColor:
                           mode === 'light'
-                              ? 'translucent white (10%)'
-                              : 'translucent white (8%)'
+                              ? alpha(theme.palette.primary.main, 0.08)
+                              : alpha(theme.palette.primary.main, 0.08)
                     },
                     transition: theme.transitions.create(
                         ['background-color', 'color', 'box-shadow'],
