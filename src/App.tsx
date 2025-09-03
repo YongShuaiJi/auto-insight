@@ -103,7 +103,6 @@ function App() {
 
         return (
           <div>
-            <h1>{selectedProduct.name}</h1>
             {routeContent}
           </div>
         );

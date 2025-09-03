@@ -4,11 +4,9 @@ import {
   People as PeopleIcon,
   Receipt as ReceiptIcon,
   Settings as SettingsIcon,
-  Inventory as InventoryIcon,
 } from '@mui/icons-material';
 import Dashboard from '../pages/Dashboard';
 import Users from '../pages/Users';
-import Products from '../pages/Products';
 import Orders from '../pages/Orders';
 import Settings from '../pages/Settings';
 
@@ -26,16 +24,9 @@ const routes: Route[] = [
   {
     id: 'dashboard',
     path: '/',
-    label: 'Dashboard',
+    label: '仪表盘',
     icon: <DashboardIcon />,
     component: Dashboard
-  },
-  {
-    id: 'products',
-    path: '/products',
-    label: 'Products',
-    icon: <InventoryIcon />,
-    component: Products
   },
   {
     id: 'orders',
