@@ -16,9 +16,17 @@ import {
   IconButton,
   Grid,
   Autocomplete,
-  Chip
+  Chip,
+  ToggleButton,
+  ToggleButtonGroup,
+  Paper
 } from '@mui/material';
-import { Close as CloseIcon, BugReport as BugReportIcon } from '@mui/icons-material';
+import { 
+  Close as CloseIcon, 
+  BugReport as BugReportIcon,
+  Edit as EditIcon, 
+  Visibility as VisibilityIcon 
+} from '@mui/icons-material';
 import { 
   fetchUsers, 
   fetchProjects, 
@@ -28,24 +36,78 @@ import {
   fetchBugTypes,
   fetchNotFixReasons
 } from '../services/bugsApi';
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+import MDEditor from "@uiw/react-md-editor";
+import MarkdownPreview from "@uiw/react-markdown-preview";
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
 
-// Simple markdown editor component
+// Enhanced Markdown editor component using @uiw/react-md-editor and @uiw/react-markdown-preview
 const MarkdownEditor: React.FC<{
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 }> = ({ value, onChange, placeholder = '请输入描述（支持Markdown语法）' }) => {
+  const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
+
+  const handleViewModeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newMode: 'edit' | 'preview' | null,
+  ) => {
+    if (newMode !== null) {
+      setViewMode(newMode);
+    }
+  };
+
   return (
-    <TextField
-      fullWidth
-      multiline
-      rows={10}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      variant="outlined"
-    />
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+        <ToggleButtonGroup
+          value={viewMode}
+          exclusive
+          onChange={handleViewModeChange}
+          aria-label="markdown view mode"
+          size="small"
+        >
+          <ToggleButton value="edit" aria-label="edit mode">
+            <EditIcon fontSize="small" sx={{ mr: 0.5 }} />
+            编辑
+          </ToggleButton>
+          <ToggleButton value="preview" aria-label="preview mode">
+            <VisibilityIcon fontSize="small" sx={{ mr: 0.5 }} />
+            预览
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
+      {viewMode === 'edit' ? (
+        <MDEditor
+          value={value}
+          onChange={(val) => onChange(val || '')}
+          preview="live"
+          height={300}
+        />
+      ) : (
+        <Paper 
+          variant="outlined" 
+          sx={{ 
+            height: 300, 
+            overflow: 'auto', 
+            p: 2,
+            backgroundColor: (theme) => 
+              theme.palette.mode === 'dark' ? '#1e1e1e' : '#f5f5f5'
+          }}
+        >
+          {value ? (
+            <MarkdownPreview source={value} />
+          ) : (
+            <Box sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
+              无内容预览
+            </Box>
+          )}
+        </Paper>
+      )}
+    </Box>
   );
 };
 
