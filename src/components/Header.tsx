@@ -4,7 +4,9 @@ import {
   IconButton,
   Toolbar,
   Typography,
-  Tooltip
+  Tooltip,
+  alpha,
+  useTheme
 } from "@mui/material";
 import {
   Hub as HubIcon,
@@ -31,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   // Get theme mode and toggle function
   const { mode, toggleColorMode } = useThemeMode();
+  const theme = useTheme();
 
   return (
     <AppBar position="static">
@@ -39,7 +42,19 @@ const Header: React.FC<HeaderProps> = ({
           edge="start"
           color="inherit"
           aria-label="test central hub"
-          sx={{ mr: 2 }}
+          sx={{
+            mr: 2,
+            '&:hover': {
+              backgroundColor:
+                  mode === 'light'
+                      ? alpha(theme.palette.primary.main, 0.4)
+                      : alpha(theme.palette.primary.main, 0.15),
+            },
+            '&:focus': {
+              outline: 'none',       // 移除轮廓
+              boxShadow: 'none',     // 移除阴影
+            },
+          }}
         >
           <HubIcon />
         </IconButton>

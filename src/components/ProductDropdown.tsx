@@ -58,7 +58,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
 
   return (
       <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
-        <Tooltip arrow>
+        <Tooltip title={"选择项目"} arrow>
           <Button
               variant="text"
               color="inherit"

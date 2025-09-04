@@ -8,7 +8,8 @@ import {
     ListItemIcon,
     ListItemText,
     IconButton,
-    Tooltip, alpha,useTheme
+    Tooltip,
+    useTheme
 } from "@mui/material";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -37,8 +38,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [collapsed, setCollapsed] = useState(true);
   const collapsedWidth = 64; // Width when collapsed
   const currentWidth = collapsed ? collapsedWidth : width;
-    const theme = useTheme();
-    const { mode } = useThemeMode();
+  const theme = useTheme();
+  const { mode } = useThemeMode();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -81,20 +82,14 @@ const Sidebar: React.FC<SidebarProps> = ({
               fontSize: '20px', // Increased icon size
             },
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)', // Enhanced shadow for better visibility
-            // '&:hover': {
-            //   backgroundColor: (theme) => theme.palette.action.hover,
-            // }
-            //   '&:hover': {
-            //       // 保持不透明，并随模式切换
-            //       backgroundColor:
-            //           theme.palette.mode === 'light'
-            //               ? theme.palette.grey[200]
-            //               : theme.palette.grey[700],
-            //   }
-              '&:hover': {
-                  backgroundColor:
-                      mode === 'light' ? theme.palette.common.white : theme.palette.common.black,
-              },
+            '&:hover': {
+                backgroundColor:
+                    mode === 'light' ? theme.palette.common.white : theme.palette.common.black,
+            },
+           '&:focus': {
+                outline: 'none',       // 移除轮廓
+                boxShadow: 'none',     // 移除阴影
+            },
           }}
         >
           {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
