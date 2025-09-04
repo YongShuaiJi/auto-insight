@@ -51,10 +51,9 @@ const MarkdownEditor: React.FC<{
         onChange={(val) => onChange(val || '')}
         preview="edit"
         height={300}
-        // theme={theme.palette.mode === 'dark' ? 'dark' : 'light'}
         style={{
           backgroundColor: 'transparent',
-          border: `1px solid ${theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'}`
+          // border: `1px solid ${theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'}`
         }}
         previewOptions={{
           style: {
@@ -69,6 +68,19 @@ const MarkdownEditor: React.FC<{
             background-color: ${theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'} !important;
             border-bottom: none !important;
             color: ${theme.palette.mode === 'dark' ? '#ffffff' : '#000000'} !important;
+          }
+          .w-md-editor {
+            border: 1px solid ${theme.palette.mode === 'dark' ? '#735151' : '#cfbcbc'} !important;
+            border-radius: 4px;
+            background-color: transparent !important;
+          }
+          .wmde-markdown-var {
+            --color-border-default: transparent; /* 变量失效 */
+          }
+          .w-md-editor-wrapper {
+            border: 1px solid ${theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'} !important;
+            border-radius: 4px;
+            background-color: transparent !important;
           }
           .w-md-editor-toolbar li > button {
             color: ${theme.palette.mode === 'dark' ? '#ffffff' : '#000000'} !important;
