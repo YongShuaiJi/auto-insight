@@ -4,11 +4,13 @@ import {
   People as PeopleIcon,
   Receipt as ReceiptIcon,
   Settings as SettingsIcon,
+  BugReport as BugReportIcon,
 } from '@mui/icons-material';
 import Dashboard from '../pages/Dashboard';
 import Users from '../pages/Users';
 import Orders from '../pages/Orders';
 import Settings from '../pages/Settings';
+import Bugs from '../pages/Bugs';
 
 // Define route types
 export interface Route {
@@ -27,6 +29,13 @@ const routes: Route[] = [
     label: '仪表盘',
     icon: <DashboardIcon />,
     component: Dashboard
+  },
+  {
+    id: 'bugs',
+    path: '/bugs',
+    label: '缺陷',
+    icon: <BugReportIcon />,
+    component: Bugs
   },
   {
     id: 'orders',
