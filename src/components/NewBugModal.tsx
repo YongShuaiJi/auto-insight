@@ -17,15 +17,11 @@ import {
   Grid,
   Autocomplete,
   Chip,
-  ToggleButton,
-  ToggleButtonGroup,
-  Paper
+  useTheme
 } from '@mui/material';
 import { 
   Close as CloseIcon, 
-  BugReport as BugReportIcon,
-  Edit as EditIcon, 
-  Visibility as VisibilityIcon 
+  BugReport as BugReportIcon
 } from '@mui/icons-material';
 import { 
   fetchUsers, 
@@ -37,76 +33,59 @@ import {
   fetchNotFixReasons
 } from '../services/bugsApi';
 import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
 import MDEditor from "@uiw/react-md-editor";
-import MarkdownPreview from "@uiw/react-markdown-preview";
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
 
-// Enhanced Markdown editor component using @uiw/react-md-editor and @uiw/react-markdown-preview
+// Simple Markdown editor component using @uiw/react-md-editor
 const MarkdownEditor: React.FC<{
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 }> = ({ value, onChange, placeholder = '请输入描述（支持Markdown语法）' }) => {
-  const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
-
-  const handleViewModeChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newMode: 'edit' | 'preview' | null,
-  ) => {
-    if (newMode !== null) {
-      setViewMode(newMode);
-    }
-  };
+  const theme = useTheme();
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
-        <ToggleButtonGroup
-          value={viewMode}
-          exclusive
-          onChange={handleViewModeChange}
-          aria-label="markdown view mode"
-          size="small"
-        >
-          <ToggleButton value="edit" aria-label="edit mode">
-            <EditIcon fontSize="small" sx={{ mr: 0.5 }} />
-            编辑
-          </ToggleButton>
-          <ToggleButton value="preview" aria-label="preview mode">
-            <VisibilityIcon fontSize="small" sx={{ mr: 0.5 }} />
-            预览
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
-
-      {viewMode === 'edit' ? (
-        <MDEditor
-          value={value}
-          onChange={(val) => onChange(val || '')}
-          preview="live"
-          height={300}
-        />
-      ) : (
-        <Paper 
-          variant="outlined" 
-          sx={{ 
-            height: 300, 
-            overflow: 'auto', 
-            p: 2,
-            backgroundColor: (theme) => 
-              theme.palette.mode === 'dark' ? '#1e1e1e' : '#f5f5f5'
-          }}
-        >
-          {value ? (
-            <MarkdownPreview source={value} />
-          ) : (
-            <Box sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
-              无内容预览
-            </Box>
-          )}
-        </Paper>
-      )}
+      <MDEditor
+        value={value}
+        onChange={(val) => onChange(val || '')}
+        preview="edit"
+        height={300}
+        // theme={theme.palette.mode === 'dark' ? 'dark' : 'light'}
+        style={{
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'}`
+        }}
+        previewOptions={{
+          style: {
+            backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#ffffff',
+            color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000'
+          }
+        }}
+      />
+      <style>
+        {`
+          .w-md-editor-toolbar {
+            background-color: ${theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'} !important;
+            border-bottom: none !important;
+            color: ${theme.palette.mode === 'dark' ? '#ffffff' : '#000000'} !important;
+          }
+          .w-md-editor-toolbar li > button {
+            color: ${theme.palette.mode === 'dark' ? '#ffffff' : '#000000'} !important;
+          }
+          .w-md-editor-toolbar li > button:hover,
+          .w-md-editor-toolbar li > button:focus {
+            background-color: ${theme.palette.mode === 'dark' 
+              ? 'rgba(255, 255, 255, 0.1)' 
+              : 'rgba(0, 0, 0, 0.1)'} !important;
+            color: ${theme.palette.mode === 'dark' ? '#ffffff' : '#000000'} !important;
+          }
+          .w-md-editor-toolbar-divider {
+            background-color: ${theme.palette.mode === 'dark' ? '#ffffff' : '#000000'} !important;
+            opacity: 0.6;
+          }
+        `}
+      </style>
     </Box>
   );
 };
@@ -173,7 +152,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
             fetchBugTypes(),
             fetchNotFixReasons()
           ]);
-          
+
           setUsers(usersData);
           setProjects(projectsData);
           setIterations(iterationsData);
@@ -185,7 +164,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
           console.error('Error fetching options:', error);
         }
       };
-      
+
       fetchOptions();
     }
   }, [open]);
@@ -236,7 +215,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
       creator: 'currentUser',
       completionDate: ''
     };
-    
+
     onSubmit(bugData);
   };
 
@@ -261,7 +240,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      
+
       <DialogContent dividers>
         <Grid container spacing={2}>
           <Grid size={{xs:12, md:8}}>
@@ -276,19 +255,19 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                 required
               />
             </Box>
-            
+
             {/* Description editor */}
             <MarkdownEditor
               value={description}
               onChange={setDescription}
             />
           </Grid>
-          
+
           <Grid size={{xs:12, md:4}}>
             <Typography variant="subtitle1" gutterBottom>
               基础字典
             </Typography>
-            
+
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {/* Bug Type */}
               <FormControl fullWidth>
@@ -308,7 +287,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   ))}
                 </Select>
               </FormControl>
-              
+
               {/* Assignee */}
               <Autocomplete
                 options={users}
@@ -317,7 +296,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                 onChange={(_, newValue) => setAssignee(newValue)}
                 renderInput={(params) => <TextField {...params} label="负责人" />}
               />
-              
+
               {/* Verifier */}
               <Autocomplete
                 options={users}
@@ -326,7 +305,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                 onChange={(_, newValue) => setVerifier(newValue)}
                 renderInput={(params) => <TextField {...params} label="验证者" />}
               />
-              
+
               {/* Priority */}
               <FormControl fullWidth>
                 <InputLabel>优先级</InputLabel>
@@ -345,7 +324,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   ))}
                 </Select>
               </FormControl>
-              
+
               {/* Project */}
               <FormControl fullWidth>
                 <InputLabel>归属项目</InputLabel>
@@ -364,7 +343,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   ))}
                 </Select>
               </FormControl>
-              
+
               {/* Iteration */}
               <FormControl fullWidth>
                 <InputLabel>迭代</InputLabel>
@@ -383,7 +362,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   ))}
                 </Select>
               </FormControl>
-              
+
               {/* Severity */}
               <FormControl fullWidth>
                 <InputLabel>严重程度</InputLabel>
@@ -402,7 +381,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   ))}
                 </Select>
               </FormControl>
-              
+
               {/* Participants */}
               <Autocomplete
                 multiple
@@ -421,7 +400,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                 }
                 renderInput={(params) => <TextField {...params} label="参与者" />}
               />
-              
+
               {/* CC */}
               <Autocomplete
                 multiple
@@ -440,7 +419,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                 }
                 renderInput={(params) => <TextField {...params} label="抄送" />}
               />
-              
+
               {/* Tags */}
               <Autocomplete
                 multiple
@@ -459,7 +438,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                 }
                 renderInput={(params) => <TextField {...params} label="标签" />}
               />
-              
+
               {/* Planned Start Date */}
               <TextField
                 label="计划开始时间"
@@ -470,7 +449,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   shrink: true,
                 }}
               />
-              
+
               {/* Planned End Date */}
               <TextField
                 label="计划完成时间"
@@ -481,7 +460,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   shrink: true,
                 }}
               />
-              
+
               {/* Not Fix Reason */}
               <Autocomplete
                 options={notFixReasons}
@@ -493,7 +472,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                 }}
                 renderInput={(params) => <TextField {...params} label="不修复理由" />}
               />
-              
+
               {/* Custom Not Fix Reason */}
               {notFixReason && notFixReason.isCustom && (
                 <TextField
@@ -508,7 +487,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
           </Grid>
         </Grid>
       </DialogContent>
-      
+
       <DialogActions>
         <Button onClick={handleClose}>取消</Button>
         <Button 
