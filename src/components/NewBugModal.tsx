@@ -17,11 +17,15 @@ import {
   Grid,
   Autocomplete,
   Chip,
-  useTheme
+  useTheme,
+  ToggleButton,
+  ToggleButtonGroup
 } from '@mui/material';
 import { 
   Close as CloseIcon, 
-  BugReport as BugReportIcon
+  BugReport as BugReportIcon,
+  Edit as EditIcon,
+  Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import { 
   fetchUsers, 
@@ -33,35 +37,93 @@ import {
   fetchNotFixReasons
 } from '../services/bugsApi';
 import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
 import MDEditor from "@uiw/react-md-editor";
+import MarkdownPreview from "@uiw/react-markdown-preview";
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
 
-// Simple Markdown editor component using @uiw/react-md-editor
+// Enhanced Markdown editor component using @uiw/react-md-editor
 const MarkdownEditor: React.FC<{
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 }> = ({ value, onChange, placeholder = '请输入描述（支持Markdown语法）' }) => {
   const theme = useTheme();
+  const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
+
+  const handleViewModeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newMode: 'edit' | 'preview' | null,
+  ) => {
+    if (newMode !== null) {
+      setViewMode(newMode);
+    }
+  };
 
   return (
     <Box sx={{ width: '100%' }}>
-      <MDEditor
-        value={value}
-        onChange={(val) => onChange(val || '')}
-        preview="edit"
-        height={300}
-        style={{
-          backgroundColor: 'transparent',
-          // border: `1px solid ${theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'}`
-        }}
-        previewOptions={{
-          style: {
-            backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#ffffff',
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+        <ToggleButtonGroup
+          value={viewMode}
+          exclusive
+          onChange={handleViewModeChange}
+          aria-label="markdown view mode"
+          size="small"
+        >
+          <ToggleButton value="edit" aria-label="edit mode">
+            <EditIcon fontSize="small" sx={{ mr: 0.5 }} />
+            编辑
+          </ToggleButton>
+          <ToggleButton value="preview" aria-label="preview mode">
+            <VisibilityIcon fontSize="small" sx={{ mr: 0.5 }} />
+            预览
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
+      {viewMode === 'edit' ? (
+        <MDEditor
+          value={value}
+          onChange={(val) => onChange(val || '')}
+          preview="edit"
+          height={300}
+          style={{
+            backgroundColor: 'transparent',
+            // border: `1px solid ${theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'}`
+          }}
+          previewOptions={{
+            style: {
+              backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#ffffff',
+              color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000'
+            }
+          }}
+        />
+      ) : (
+        <Box 
+          sx={{ 
+            height: 300, 
+            overflow: 'auto', 
+            p: 2,
+            border: `1px solid ${theme.palette.mode === 'dark' ? '#735151' : '#cfbcbc'}`,
+            borderRadius: '4px',
             color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000'
-          }
-        }}
-      />
+          }}
+        >
+          {value ? (
+            <MarkdownPreview 
+              source={value} 
+              style={{ 
+                backgroundColor: 'inherit',
+                color: 'inherit'
+              }}
+            />
+          ) : (
+            <Box sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
+              无内容预览
+            </Box>
+          )}
+        </Box>
+      )}
       <style>
         {`
           .w-md-editor-toolbar {
@@ -95,6 +157,19 @@ const MarkdownEditor: React.FC<{
           .w-md-editor-toolbar-divider {
             background-color: ${theme.palette.mode === 'dark' ? '#ffffff' : '#000000'} !important;
             opacity: 0.6;
+          }
+          /* Override markdown preview styles */
+          .wmde-markdown {
+            background-color: transparent !important;
+            color: inherit !important;
+          }
+          .wmde-markdown-color {
+            color: inherit !important;
+          }
+          /* Remove horizontal lines between titles */
+          .wmde-markdown h1,
+          .wmde-markdown h2 {
+            border-bottom: none !important;
           }
         `}
       </style>
