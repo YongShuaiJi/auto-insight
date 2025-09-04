@@ -71,8 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             left: currentWidth - 16,
               // right: '-16px', // Positioned outside the sidebar
             top: '56px', // Positioned between first and second menu items
-              // zIndex: (theme) => theme.zIndex.modal + 1,
-            zIndex: 9999, // Extremely high z-index to ensure it's above everything
+            zIndex: (theme) => theme.zIndex.drawer + 1, // 调整展开/收起图标的层级，只在菜单栏的上层
             backgroundColor: (theme) => theme.palette.background.paper,
             border: (theme) => `1px solid ${theme.palette.divider}`,
             borderRadius: '50%',
