@@ -171,6 +171,10 @@ const MarkdownEditor: React.FC<{
           .wmde-markdown h2 {
             border-bottom: none !important;
           }
+          /* Hide anchor links */
+          .wmde-markdown a.anchor {
+            display: none !important;
+          }
         `}
       </style>
     </Box>
