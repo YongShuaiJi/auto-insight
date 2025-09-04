@@ -31,16 +31,23 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
   const { mode } = useThemeMode();
 
   useEffect(() => {
-    const getProducts = async () => {
+    let isMounted = true; // 标记组件是否还挂载
+
+    (async () => {
       try {
         const data = await fetchProducts();
-        setProducts(data as Product[]);
+        if (isMounted) {
+          setProducts(data as Product[]);
+        }
       } catch (error) {
         console.error('Error fetching products:', error);
       }
-    };
+    })();
 
-    getProducts();
+    // 清理函数：组件卸载时设置 isMounted = false
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
