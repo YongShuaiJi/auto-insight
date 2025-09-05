@@ -69,13 +69,20 @@ const MarkdownEditor: React.FC<{
           onChange={handleViewModeChange}
           aria-label="markdown view mode"
           size="small"
+          sx={{ 
+            height: '28px', // Reduced height from default
+            '& .MuiToggleButton-root': {
+              padding: '2px 8px', // Reduced padding
+              fontSize: '0.75rem', // Smaller font size
+            }
+          }}
         >
           <ToggleButton value="edit" aria-label="edit mode">
-            <EditIcon fontSize="small" sx={{ mr: 0.5 }} />
+            <EditIcon fontSize="small" sx={{ mr: 0.5, fontSize: '0.875rem' }} />
             编辑
           </ToggleButton>
           <ToggleButton value="preview" aria-label="preview mode">
-            <VisibilityIcon fontSize="small" sx={{ mr: 0.5 }} />
+            <VisibilityIcon fontSize="small" sx={{ mr: 0.5, fontSize: '0.875rem' }} />
             预览
           </ToggleButton>
         </ToggleButtonGroup>
