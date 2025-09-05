@@ -3,6 +3,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ThemeModeContext } from './ThemeModeContext';
 
+const STORAGE_KEY = 'themePreference';
+
 // Define theme colors
 const lightThemeColors = {
   primary: {
@@ -46,41 +48,76 @@ const darkThemeColors = {
   },
 };
 
-
 // Theme provider component
 interface ThemeProviderWrapperProps {
   children: React.ReactNode;
 }
 
+const getSystemMode = (): 'light' | 'dark' => {
+  try {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  } catch {
+    return 'light';
+  }
+};
+
 export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ children }) => {
-  // Get initial color scheme from browser preference
-  const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const [mode, setMode] = useState<'light' | 'dark'>(prefersDarkMode ? 'dark' : 'light');
+  // 初始化读取本地缓存；无缓存则默认写入 'light'
+  const [preference, setPreferenceState] = useState<'light' | 'dark' | 'system'>(() => {
+    const cached = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
+    if (cached === 'light' || cached === 'dark' || cached === 'system') {
+      return cached;
+    }
+    // 默认使用明色并写入缓存
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, 'light');
+    }
+    return 'light';
+  });
 
-  // Listen for changes in color scheme preference
+  // 实际生效的 MUI 主题模式（仅 light/dark）
+  const [mode, setMode] = useState<'light' | 'dark'>(() =>
+    preference === 'system' ? getSystemMode() : (preference as 'light' | 'dark')
+  );
+
+  // 当偏好变化时，写入本地缓存
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      setMode(e.matches ? 'dark' : 'light');
-    };
+    try {
+      localStorage.setItem(STORAGE_KEY, preference);
+    } catch {
+      // 忽略写缓存失败
+    }
+  }, [preference]);
 
-    // Add event listener
-    mediaQuery.addEventListener('change', handleChange);
+  // 当偏好为 system 时监听系统主题变化；否则直接应用设定的明/暗
+  useEffect(() => {
+    if (preference === 'system') {
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+      const handler = (e: MediaQueryListEvent) => {
+        setMode(e.matches ? 'dark' : 'light');
+      };
+      // 设置当前系统模式
+      setMode(mql.matches ? 'dark' : 'light');
+      // 监听系统变化
+      mql.addEventListener('change', handler);
+      return () => mql.removeEventListener('change', handler);
+    } else {
+      setMode(preference);
+    }
+  }, [preference]);
 
-    // Clean up
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
-  }, []);
-
-  const colorMode = useMemo(
+  const contextValue = useMemo(
     () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      },
       mode,
+      preference,
+      setPreference: (pref: 'light' | 'dark' | 'system') => setPreferenceState(pref),
+      // 兼容旧用法：在明/暗之间切换（会把偏好设置为对应值）
+      toggleColorMode: () =>
+        setPreferenceState((prev) => (prev === 'dark' ? 'light' : 'dark')),
     }),
-    [mode]
+    [mode, preference]
   );
 
   const theme = useMemo(
@@ -108,9 +145,10 @@ export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ chil
           MuiAppBar: {
             styleOverrides: {
               root: ({ theme }) => ({
-                backgroundColor: theme.palette.mode === 'light' 
-                  ? '#0066CC' // Blue background for AppBar in light mode only
-                  : undefined, // Use default dark theme color in dark mode
+                backgroundColor:
+                  theme.palette.mode === 'light'
+                    ? '#0066CC' // Blue background for AppBar in light mode only
+                    : undefined, // Use default dark theme color in dark mode
               }),
             },
           },
@@ -145,7 +183,7 @@ export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ chil
   );
 
   return (
-    <ThemeModeContext.Provider value={colorMode}>
+    <ThemeModeContext.Provider value={contextValue}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}
