@@ -202,6 +202,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
   onSubmit,
   isLoading
 }) => {
+  const theme = useTheme();
   // Form state
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -340,7 +341,29 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
         </IconButton>
       </DialogTitle>
 
-      <DialogContent dividers>
+      <DialogContent
+        dividers
+        sx={{
+          ...(theme.palette.mode === 'light' && {
+            scrollbarColor: '#c1c1c1 #ffffff', // Firefox: thumb track
+            '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
+              backgroundColor: '#ffffff', // track
+              width: 8,
+            },
+            '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
+              borderRadius: 8,
+              backgroundColor: '#c1c1c1', // thumb
+              minHeight: 24,
+            },
+            '&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover': {
+              backgroundColor: '#a8a8a8',
+            },
+            '&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active': {
+              backgroundColor: '#a8a8a8',
+            },
+          }),
+        }}
+      >
         <Grid container spacing={2}>
           <Grid size={{xs:12, md:8}}>
             {/* Title input */}
