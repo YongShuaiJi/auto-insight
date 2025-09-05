@@ -17,6 +17,7 @@ import {
   Grid,
   Autocomplete,
   Chip,
+  InputAdornment,
   useTheme,
   ToggleButton,
   ToggleButtonGroup
@@ -25,7 +26,8 @@ import {
   Close as CloseIcon, 
   BugReport as BugReportIcon,
   Edit as EditIcon,
-  Visibility as VisibilityIcon
+  Visibility as VisibilityIcon,
+  Clear as ClearIcon
 } from '@mui/icons-material';
 import { 
   fetchUsers, 
@@ -40,6 +42,10 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import MDEditor from "@uiw/react-md-editor";
 import MarkdownPreview from "@uiw/react-markdown-preview";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
 
 // Enhanced Markdown editor component using @uiw/react-md-editor
@@ -220,6 +226,9 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
   const [plannedEndDate, setPlannedEndDate] = useState<string>('');
   const [notFixReason, setNotFixReason] = useState<NotFixReason | null>(null);
   const [customNotFixReason, setCustomNotFixReason] = useState('');
+  // 控制日期选择器的展开/收起（移除图标按钮后，点击输入框任意位置展开）
+  const [startPickerOpen, setStartPickerOpen] = useState(false);
+  const [endPickerOpen, setEndPickerOpen] = useState(false);
 
   // Options for dropdowns
   const [users, setUsers] = useState<User[]>([]);
@@ -562,26 +571,104 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
               />
 
               {/* Planned Start Date */}
-              <TextField
-                label="计划开始时间"
-                type="date"
-                value={plannedStartDate}
-                onChange={(e) => setPlannedStartDate(e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="计划开始时间"
+                  value={plannedStartDate ? dayjs(plannedStartDate) : null}
+                  onChange={(newValue) => {
+                    const v = newValue && dayjs(newValue);
+                    setPlannedStartDate(v && v.isValid() ? v.format('YYYY-MM-DD') : '');
+                  }}
+                  onAccept={() => {
+                    setTimeout(() => setStartPickerOpen(false), 0);
+                  }}
+                  views={['year', 'month', 'day']}
+                  format="YYYY-MM-DD"
+                  disableOpenPicker
+                  open={startPickerOpen}
+                  onOpen={() => setStartPickerOpen(true)}
+                  onClose={() => setStartPickerOpen(false)}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      placeholder: '',
+                      inputProps: { placeholder: '' },
+                      onClick: () => setStartPickerOpen(true),
+                      InputProps: {
+                        endAdornment: plannedStartDate ? (
+                          <InputAdornment position="end">
+                            <IconButton
+                              size="small"
+                              aria-label="清除开始时间"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPlannedStartDate('');
+                                setStartPickerOpen(false);
+                              }}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                            >
+                              <ClearIcon fontSize="small" />
+                            </IconButton>
+                          </InputAdornment>
+                        ) : null,
+                      },
+                    }
+                  }}
+                />
+              </LocalizationProvider>
 
               {/* Planned End Date */}
-              <TextField
-                label="计划完成时间"
-                type="date"
-                value={plannedEndDate}
-                onChange={(e) => setPlannedEndDate(e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="计划结束时间"
+                  value={plannedEndDate ? dayjs(plannedEndDate) : null}
+                  onChange={(newValue) => {
+                    const v = newValue && dayjs(newValue);
+                    setPlannedEndDate(v && v.isValid() ? v.format('YYYY-MM-DD') : '');
+                  }}
+                  onAccept={() => {
+                    setTimeout(() => setEndPickerOpen(false), 0);
+                  }}
+                  views={['year', 'month', 'day']}
+                  format="YYYY-MM-DD"
+                  disableOpenPicker
+                  open={endPickerOpen}
+                  onOpen={() => setEndPickerOpen(true)}
+                  onClose={() => setEndPickerOpen(false)}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      placeholder: '',
+                      inputProps: { placeholder: '' },
+                      onClick: () => setEndPickerOpen(true),
+                      InputProps: {
+                        endAdornment: plannedEndDate ? (
+                          <InputAdornment position="end">
+                            <IconButton
+                              size="small"
+                              aria-label="清除结束时间"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPlannedEndDate('');
+                                setEndPickerOpen(false);
+                              }}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                            >
+                              <ClearIcon fontSize="small" />
+                            </IconButton>
+                          </InputAdornment>
+                        ) : null,
+                      },
+                    }
+                  }}
+                />
+              </LocalizationProvider>
 
               {/* Not Fix Reason */}
               <Autocomplete
