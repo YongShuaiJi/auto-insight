@@ -104,6 +104,7 @@ const MarkdownEditor: React.FC<{
               color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000'
             }
           }}
+          extraCommands={[]}
         />
       ) : (
         <Box 
