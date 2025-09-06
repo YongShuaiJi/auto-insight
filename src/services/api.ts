@@ -11,7 +11,7 @@ const mockProducts = [
 export const fetchProducts = async () => {
   // In a real application, this would be an API call
   // For now, we'll return mock data
-  return new Promise((resolve) => {
+  return new Promise<Product[]>((resolve) => {
     setTimeout(() => {
       resolve(mockProducts);
     }, 500);

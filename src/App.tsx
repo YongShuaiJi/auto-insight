@@ -4,7 +4,7 @@ import Layout from './components/Layout'
 import routes, { renderRouteById } from './routes'
 import ThemeProviderWrapper from './theme'
 import { fetchProducts } from './services/api.ts'
-import type { Product } from '../services/api.ts';
+import type { Product } from './services/api.ts';
 
 // Error boundary component
 interface ErrorBoundaryProps {
@@ -113,7 +113,8 @@ function App() {
       return routeContent;
     } catch (error) {
       console.error('Error in renderContent:', error);
-      return <div style={{ color: 'red' }}>Error rendering content: {error.message}</div>;
+      const message = error instanceof Error ? error.message : String(error);
+      return <div style={{ color: 'red' }}>Error rendering content: {message}</div>;
     }
   };
 
