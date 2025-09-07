@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Dropdown, Typography, Tooltip, Space, DownOutlined } from '../ui';
+import { Button, Dropdown, DownOutlined } from '../ui';
 import { fetchProducts } from '../services/api.ts';
 import type { Product } from "../services/api.ts";
 import { useThemeMode } from '../theme/ThemeModeContext';
@@ -65,8 +65,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
             })),
           }}
         >
-          <Tooltip title={""}>
-            <Button
+          <Button
               type="text"
               onClick={() => setMenuOpen((v) => !v)}
               style={{
@@ -89,7 +88,6 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                 }}
               />
             </Button>
-          </Tooltip>
         </Dropdown>
       </div>
   );

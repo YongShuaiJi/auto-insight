@@ -15,11 +15,11 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  navItems,
-  selectedItem,
-  onItemSelect,
-  width = 240
-}) => {
+                                           navItems,
+                                           selectedItem,
+                                           onItemSelect,
+                                           width = 240
+                                         }) => {
   const [collapsed, setCollapsed] = useState(true);
   const collapsedWidth = 64; // Width when collapsed
   const currentWidth = collapsed ? collapsedWidth : width;
@@ -54,8 +54,30 @@ const Sidebar: React.FC<SidebarProps> = ({
           onClick={(e) => onItemSelect(e.key as string)}
           items={navItems.map((item) => ({
             key: item.id,
-            icon: item.icon,
-            label: item.label
+            style: collapsed ? { height: 58, lineHeight: '52px', overflow: 'visible' } : undefined,
+            icon: (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  lineHeight: 1,
+                  // Ensure the icon block has enough height in collapsed mode to show two rows
+                  minHeight: collapsed ? 40 : undefined,
+                  overflow: 'visible'
+                }}
+              >
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{item.icon}</span>
+                {collapsed && (
+                  <span style={{ fontSize: 10, marginTop: 2, whiteSpace: 'nowrap' }}>{item.label}</span>
+                )}
+              </div>
+            ),
+            // Keep label empty in collapsed to avoid duplicate; use string in expanded
+            label: collapsed ? '' : item.label,
+            // Use antd Menu's built-in tooltip (only when collapsed)
+            title: collapsed ? item.label : undefined
           }))}
         />
       </div>
