@@ -31,6 +31,7 @@ const BugDrawer: React.FC<BugDrawerProps> = ({ open, bug, onClose, onSubmit, isL
         initialBug={bug || undefined}
         isLoading={isLoading}
         onSubmit={(payload) => onSubmit(payload as Bug)}
+        sidePanelAutoHeight
       />
     </Drawer>
   );

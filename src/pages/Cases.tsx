@@ -1,12 +1,12 @@
 import React from 'react';
 import { Typography } from '../ui';
 
-const Orders: React.FC = () => {
+const Cases: React.FC = () => {
   return (
     <Typography.Title level={4}>
-      Orders Management
+      用例
     </Typography.Title>
   );
 };
 
-export default Orders;
+export default Cases;

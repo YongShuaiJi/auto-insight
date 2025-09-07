@@ -2,7 +2,7 @@ import React from 'react';
 import { HomeOutlined, UserOutlined, FileTextOutlined, SettingOutlined, BugOutlined } from '../ui';
 import Dashboard from '../pages/Dashboard';
 import Users from '../pages/Users';
-import Orders from '../pages/Orders';
+import Cases from '../pages/Cases';
 import Settings from '../pages/Settings';
 import Bugs from '../pages/Bugs';
 
@@ -32,23 +32,23 @@ const routes: Route[] = [
     component: Bugs
   },
   {
-    id: 'orders',
-    path: '/orders',
-    label: 'Orders',
+    id: 'cases',
+    path: '/cases',
+    label: '用例',
     icon: <FileTextOutlined />,
-    component: Orders
+    component: Cases
   },
   {
     id: 'users',
     path: '/users',
-    label: 'Users',
+    label: '用例',
     icon: <UserOutlined />,
     component: Users
   },
   {
     id: 'settings',
     path: '/settings',
-    label: 'Settings',
+    label: '设置',
     icon: <SettingOutlined />,
     component: Settings
   }

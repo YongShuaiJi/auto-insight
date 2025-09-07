@@ -17,7 +17,7 @@ interface OrdersTableProps {
 
 const OrdersTable: React.FC<OrdersTableProps> = ({
   orders,
-  title = "Recent Orders",
+  title = "Recent Cases",
   className = "dashboard-card"
 }) => {
   const columns = [

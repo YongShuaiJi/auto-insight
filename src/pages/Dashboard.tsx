@@ -36,7 +36,7 @@ const Dashboard: React.FC<DashboardProps> = ({ recentOrders = [] }) => {
 
         <Col xs={24} sm={12} md={6}>
           <SummaryCard
-            title="New Orders"
+            title="New Cases"
             value="25"
             icon={<ShoppingCartOutlined />}
           />
@@ -58,7 +58,7 @@ const Dashboard: React.FC<DashboardProps> = ({ recentOrders = [] }) => {
           />
         </Col>
 
-        {/* Recent Orders Table */}
+        {/* Recent Cases Table */}
         <Col xs={24}>
           <OrdersTable orders={orders} />
         </Col>

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { Form, Input, Select, DatePicker, Typography } from 'antd';
+import { Form, Input, Select, DatePicker, Typography, Segmented } from 'antd';
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
 import { fetchUsers, fetchProjects, fetchIterations, fetchPriorities, fetchSeverities, fetchBugTypes, fetchNotFixReasons } from '../services/bugsApi';
 import MDEditor from '@uiw/react-md-editor';
@@ -50,10 +50,19 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
   isLoading = false,
   onSubmit,
   onCancel,
-  sidePanelAutoHeight = false,
+  sidePanelAutoHeight = true,
+  mode: formMode = 'create',
 }, ref) => {
   const [form] = Form.useForm<BugFormValues>();
   const { mode } = useThemeMode();
+
+  // 编辑器预览模式：create => 默认编辑；其余（如详情/编辑）=> 默认预览
+  const [mdPreview, setMdPreview] = useState<'edit' | 'preview'>(formMode === 'create' ? 'edit' : 'preview');
+  useEffect(() => {
+    if (open) {
+      setMdPreview(formMode === 'create' ? 'edit' : 'preview');
+    }
+  }, [open, formMode]);
 
   // Options
   const [users, setUsers] = useState<User[]>([]);
@@ -224,19 +233,38 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
 
       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
-          <Form.Item label="描述" name="description" style={{ marginBottom: 0 }} valuePropName="value" getValueFromEvent={(v) => v ?? ''}>
-            <MDEditor
-              data-color-mode={mode}
-              preview="edit"
-              height={ sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }
-              commandsFilter={(command) => {
-                const cmd = command as Record<string, unknown>;
-                const name = (typeof cmd.name === 'string' ? (cmd.name as string) : (typeof cmd.keyCommand === 'string' ? (cmd.keyCommand as string) : undefined));
-                return name === 'help' || name === 'open_help' || name === 'open-help' ? false : command;
-              }}
-              extraCommands={[]}
-            />
-          </Form.Item>
+          <div style={{ position: 'relative'}}>
+            <div style={{ position: 'absolute', right: 8, top: 0, zIndex: 2 }}>
+              <Segmented
+                size="small"
+                value={mdPreview}
+                onChange={(val) => setMdPreview(val as 'edit' | 'preview')}
+                options={[
+                  { label: '编辑', value: 'edit' },
+                  { label: '预览', value: 'preview' },
+                ]}
+              />
+            </div>
+            <Form.Item
+              label="描述"
+              name="description"
+              style={{ marginBottom: 0 }}
+              valuePropName="value"
+              getValueFromEvent={(v) => v ?? ''}
+            >
+              <MDEditor
+                data-color-mode={mode}
+                preview={mdPreview}
+                height={ sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }
+                commandsFilter={(command) => {
+                  const cmd = command as Record<string, unknown>;
+                  const name = (typeof cmd.name === 'string' ? (cmd.name as string) : (typeof cmd.keyCommand === 'string' ? (cmd.keyCommand as string) : undefined));
+                  return name === 'help' || name === 'open_help' || name === 'open-help' ? false : command;
+                }}
+                extraCommands={[]}
+              />
+            </Form.Item>
+          </div>
         </div>
         <div ref={sideRef} style={{ width: 300, border: '1px solid var(--ant-color-border, #f0f0f0)', borderRadius: 8, padding: 12, overflow: 'auto' }}>
           <div style={{ fontWeight: 600, marginBottom: 8 }}>基本信息</div>
