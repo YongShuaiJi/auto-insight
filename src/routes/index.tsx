@@ -41,7 +41,7 @@ const routes: Route[] = [
   {
     id: 'users',
     path: '/users',
-    label: '用例',
+    label: '用户',
     icon: <UserOutlined />,
     component: Users
   },
