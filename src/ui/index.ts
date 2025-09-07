@@ -45,5 +45,10 @@ export {
   CloseOutlined,
   EyeOutlined,
   CloseCircleOutlined,
-  DownOutlined
+  DownOutlined,
+  ExperimentOutlined,
+  RadarChartOutlined,
+  RobotOutlined,
+  FireOutlined,
+  BulbTwoTone
 } from '@ant-design/icons';

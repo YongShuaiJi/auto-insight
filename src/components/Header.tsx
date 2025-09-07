@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Typography, Button, Dropdown, Menu, Space, ApiOutlined, LogoutOutlined, MoonOutlined, SunOutlined, LaptopOutlined, theme } from '../ui';
+import { Typography, Button, Dropdown, Menu, Space, RobotOutlined, LogoutOutlined, MoonOutlined, SunOutlined, LaptopOutlined, theme } from '../ui';
 import { useThemeMode } from '../theme/ThemeModeContext';
 import ProductDropdown from './ProductDropdown';
 import type { Product } from '../services/api.ts';
+import { BulbTwoTone } from '../ui';
 
 interface HeaderProps {
   title?: string;
@@ -44,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: token.colorBgContainer, borderBottom: `1px solid ${token.colorBorderSecondary}` }}>
       <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px', color: token.colorText }}>
-        <Button type="text" shape="circle" aria-label="test central hub" icon={<ApiOutlined />} />
+        <Button type="text" shape="circle" aria-label="AI testing hub" icon={<BulbTwoTone />} />
         <Typography.Title level={5} style={{ margin: '0 8px' }}>
           {title}
         </Typography.Title>
