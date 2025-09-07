@@ -80,9 +80,47 @@ export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ chil
   // 根据当前模式选择 Ant Design 的标准算法
   const algorithm = mode === 'dark' ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm;
 
+  // 定义基础主题色与在明/暗模式下的差异化组件样式
+  const themeConfig = {
+    algorithm,
+    token: {
+      // 统一品牌主色，可根据需求修改
+      colorPrimary: '#3B82F6', // Tailwind blue-500 风格
+      borderRadius: 6,
+    },
+    components: {
+      Layout: {
+        // 头部、内容背景根据模式由算法决定，这里只做微调
+        headerBg: mode === 'dark' ? '#111827' : '#ffffff',
+        headerHeight: 56,
+        bodyBg: undefined,
+      },
+      Menu: {
+        // 水平与内联菜单的主色系跟随主题主色
+        itemSelectedColor: undefined,
+        itemSelectedBg: mode === 'dark' ? 'rgba(59,130,246,0.16)' : 'rgba(59,130,246,0.12)',
+        itemHoverBg: mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.03)',
+        itemActiveBg: undefined,
+        borderRadius: 8,
+      },
+      Button: {
+        // 强化主按钮在明暗模式下的可读性
+        primaryShadow: 'none',
+        defaultShadow: 'none',
+        borderRadius: 6,
+      },
+      Dropdown: {
+        controlItemBgHover: mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.03)'
+      },
+      Card: {
+        borderRadiusLG: 10,
+      },
+    },
+  } as const;
+
   return (
     <ThemeModeContext.Provider value={contextValue}>
-      <ConfigProvider locale={zhCN} theme={{ algorithm }}>
+      <ConfigProvider locale={zhCN} theme={themeConfig}>
         {children}
       </ConfigProvider>
     </ThemeModeContext.Provider>

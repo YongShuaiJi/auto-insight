@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
   return (
-    <aside style={{ width: currentWidth, transition: 'width 0.2s ease-in-out' }}>
+    <aside style={{ width: currentWidth, transition: 'width 0.2s ease-in-out', backgroundColor: token.colorBgContainer, borderRight: `1px solid ${token.colorBorderSecondary}`, minHeight: 'calc(100vh - 56px)' }}>
       <div style={{ position: 'relative', height: '100%' }}>
         <Button
           onClick={toggleCollapsed}

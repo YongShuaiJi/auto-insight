@@ -65,7 +65,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
             })),
           }}
         >
-          <Tooltip title={"选择项目"}>
+          <Tooltip title={""}>
             <Button
               type="text"
               onClick={() => setMenuOpen((v) => !v)}
@@ -73,7 +73,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                 textTransform: 'none',
                 borderRadius: 6,
                 padding: '4px 8px',
-                fontSize: '1.15rem',
+                fontSize: '15px',
                 fontWeight: 600,
                 minHeight: 40,
               }}
