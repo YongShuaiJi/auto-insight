@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ThemeModeContext } from './ThemeModeContext';
+import { ConfigProvider, theme as antdTheme } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
 
 const STORAGE_KEY = 'themePreference';
-
-// Note: We previously used MUI's theme system here. Since the app now uses Ant Design's ConfigProvider
-// for theming, we keep only the mode state and context without MUI theme objects.
 
 // Theme provider component
 interface ThemeProviderWrapperProps {
@@ -28,14 +27,14 @@ export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ chil
     if (cached === 'light' || cached === 'dark' || cached === 'system') {
       return cached;
     }
-    // 默认使用明色并写入缓存
+    // 默认跟随系统并写入缓存
     if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, 'light');
+      localStorage.setItem(STORAGE_KEY, 'system');
     }
-    return 'light';
+    return 'system';
   });
 
-    // 实际生效的主题模式（仅 light/dark）
+  // 实际生效的主题模式（仅 light/dark）
   const [mode, setMode] = useState<'light' | 'dark'>(() =>
     preference === 'system' ? getSystemMode() : (preference as 'light' | 'dark')
   );
@@ -78,9 +77,14 @@ export const ThemeProviderWrapper: React.FC<ThemeProviderWrapperProps> = ({ chil
     [mode, preference]
   );
 
+  // 根据当前模式选择 Ant Design 的标准算法
+  const algorithm = mode === 'dark' ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm;
+
   return (
     <ThemeModeContext.Provider value={contextValue}>
-      {children}
+      <ConfigProvider locale={zhCN} theme={{ algorithm }}>
+        {children}
+      </ConfigProvider>
     </ThemeModeContext.Provider>
   );
 };
