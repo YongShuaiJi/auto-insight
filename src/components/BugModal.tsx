@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Modal, Form, Input, Select, DatePicker, Typography, Space, Tag } from 'antd';
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
 import {
@@ -105,6 +105,32 @@ const BugModal: React.FC<NewBugModalProps> = ({ open, onClose, onSubmit, isLoadi
     }
   }, [selectedNotFixIsCustom, notFixReasons, form]);
 
+  const sideRef = useRef<HTMLDivElement | null>(null);
+  const [sideHeight, setSideHeight] = useState<number>(300);
+
+  useEffect(() => {
+    if (!open) return;
+    const min = 300;
+    const tick = () => {
+      const el = sideRef.current;
+      if (!el) return;
+      const h = Math.max(min, Math.round(el.clientHeight || min));
+      console.log('size',h);
+      setSideHeight(h-30);
+    };
+    const id = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(id);
+  }, [
+    open,
+    users.length,
+    projects.length,
+    iterations.length,
+    priorities.length,
+    severities.length,
+    bugTypes.length,
+    notFixReasons.length,
+  ]);
+
   return (
     <Modal
       title={<Space><Typography.Text strong>新建缺陷</Typography.Text></Space>}
@@ -137,24 +163,29 @@ const BugModal: React.FC<NewBugModalProps> = ({ open, onClose, onSubmit, isLoadi
         </Form.Item>
 
         {/* Description with right-side basic info */}
-        <div style={{ display: 'flex', gap: 16 }}>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+          {/* Left: Make container match measured height */}
           <div style={{ flex: 1 }}>
+            {/* Use measured height for editor */}
             <Form.Item label="描述" name="description" style={{ marginBottom: 0 }}>
               <MDEditor
                 value={form.getFieldValue('description')}
                 onChange={(v) => form.setFieldsValue({ description: v || '' })}
                 preview="edit"
-                height={300}
+                height={ Math.max(300,Math.round(sideHeight))}
+                // height={400}
                 extraCommands={[]}
               />
             </Form.Item>
           </div>
           <div
+            ref={sideRef}
             style={{
               width: 300,
               border: '1px solid var(--ant-color-border, #f0f0f0)',
               borderRadius: 8,
-              padding: 12 }}
+              padding: 12,
+              overflow: 'auto' }}
           >
             <div style={{ fontWeight: 600, marginBottom: 8 }}>
               基本信息
@@ -217,7 +248,7 @@ const BugModal: React.FC<NewBugModalProps> = ({ open, onClose, onSubmit, isLoadi
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16, marginBottom: 32 }}>
           {/* Left column fields */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <Form.Item label="参与者" name="participants" style={{ marginBottom: 0 }}>
