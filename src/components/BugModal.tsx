@@ -13,7 +13,7 @@ import {
 import MDEditor from '@uiw/react-md-editor';
 
 
-interface NewBugModalProps {
+interface BugModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (bugData: Omit<Bug, 'id' | 'createdAt'>) => void;
@@ -22,7 +22,7 @@ interface NewBugModalProps {
 
 const { TextArea } = Input;
 
-const BugModal: React.FC<NewBugModalProps> = ({ open, onClose, onSubmit, isLoading }) => {
+const BugModal: React.FC<BugModalProps> = ({ open, onClose, onSubmit, isLoading }) => {
   const [form] = Form.useForm();
 
   // Options
@@ -140,7 +140,7 @@ const BugModal: React.FC<NewBugModalProps> = ({ open, onClose, onSubmit, isLoadi
       okText="新建"
       confirmLoading={isLoading}
       destroyOnClose
-      width={1000}
+      width={1500}
     >
       <Form
         form={form}
