@@ -435,7 +435,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
         }}
       >
         <Grid container spacing={2}>
-          <Grid size={{xs:12, md:8}}>
+          <Grid size={{xs:12, md:9}}>
             {/* Title input */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <BugReportIcon sx={{ mr: 1, color: 'text.secondary' }} />
@@ -455,12 +455,24 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
             />
           </Grid>
 
-          <Grid size={{xs:12, md:4}}>
+          <Grid
+            size={{xs:12, md:3}}
+            sx={{
+              width: '100%',
+              paddingLeft: 2,
+            }}
+          >
             <Typography variant="subtitle1" gutterBottom>
               基础字典
             </Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1.25,
+              }}
+            >
               {/* Bug Type */}
               <FormControl fullWidth>
                 <InputLabel>工作项类型</InputLabel>
@@ -575,6 +587,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
               </FormControl>
 
               {/* Participants */}
+              
               <Autocomplete
                 multiple
                 options={users}
