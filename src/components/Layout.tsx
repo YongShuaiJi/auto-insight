@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './Header';
 import Sidebar, {type NavItem} from './Sidebar';
 import type { Product } from '../services/api.ts';
+import { theme } from 'antd';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -24,8 +25,9 @@ const Layout: React.FC<LayoutProps> = ({
   selectedProduct,
   onProductSelect
 }) => {
+  const { token } = theme.useToken();
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: token.colorBgLayout, color: token.colorText }}>
       {/* Header */}
       <Header 
         title={title} 

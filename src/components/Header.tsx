@@ -41,10 +41,10 @@ const Header: React.FC<HeaderProps> = ({
       : <MoonOutlined />;
 
   return (
-    <header style={{ position: 'sticky', top: 0, zIndex: 100, background: '#0066CC', color: '#fff' }}>
+    <header style={{ position: 'sticky', top: 0, zIndex: 100 }}>
       <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px' }}>
-        <Button type="text" shape="circle" aria-label="test central hub" icon={<ApiOutlined />} style={{ color: '#fff' }} />
-        <Typography.Title level={5} style={{ color: '#fff', margin: '0 8px' }}>
+        <Button type="text" shape="circle" aria-label="test central hub" icon={<ApiOutlined />} />
+        <Typography.Title level={5} style={{ margin: '0 8px' }}>
           {title}
         </Typography.Title>
 
@@ -93,12 +93,12 @@ const Header: React.FC<HeaderProps> = ({
           }}
           trigger={["click"]}
         >
-          <Button type="text" style={{ color: '#fff' }}>
+          <Button type="text">
             {currentIcon}
           </Button>
         </Dropdown>
 
-        <Button type="text" aria-label="logout" onClick={onLogout} style={{ color: '#fff' }} icon={<LogoutOutlined />} />
+        <Button type="text" aria-label="logout" onClick={onLogout} icon={<LogoutOutlined />} />
       </div>
     </header>
   );

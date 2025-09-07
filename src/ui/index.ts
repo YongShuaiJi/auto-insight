@@ -18,7 +18,7 @@ export {
   Col,
   Switch,
   Dropdown,
-  Spin
+  Spin,theme
 } from 'antd';
 
 export {

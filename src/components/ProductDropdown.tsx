@@ -76,7 +76,6 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                 fontSize: '1.15rem',
                 fontWeight: 600,
                 minHeight: 40,
-                color: '#fff',
               }}
               icon={null}
             >

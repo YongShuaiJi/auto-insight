@@ -4,6 +4,7 @@ import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFix
 import { fetchUsers, fetchProjects, fetchIterations, fetchPriorities, fetchSeverities, fetchBugTypes, fetchNotFixReasons } from '../services/bugsApi';
 import MDEditor from '@uiw/react-md-editor';
 import dayjs, { Dayjs } from 'dayjs';
+import { useThemeMode } from '../theme/ThemeModeContext';
 
 export type BugFormMode = 'create' | 'edit';
 
@@ -45,7 +46,6 @@ const { TextArea } = Input;
 
 const BugForm = forwardRef<BugFormRef, BugFormProps>(({
   open,
-  mode,
   initialBug,
   isLoading = false,
   onSubmit,
@@ -53,6 +53,7 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
   sidePanelAutoHeight = false,
 }, ref) => {
   const [form] = Form.useForm<BugFormValues>();
+  const { mode } = useThemeMode();
 
   // Options
   const [users, setUsers] = useState<User[]>([]);
@@ -100,7 +101,7 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
   // init/reset values
   useEffect(() => {
     if (!open) return;
-    if (mode === 'edit' && initialBug) {
+    if (mode === 'light' && initialBug) {
       form.setFieldsValue({
         title: initialBug.title || '',
         description: initialBug.description || '',
@@ -119,7 +120,7 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
         notFixReason: initialBug.notFixReason || '',
         customNotFixReason: initialBug.customNotFixReason || '',
       });
-    } else if (mode === 'create') {
+    } else if (mode === 'light') {
       form.resetFields();
       form.setFieldsValue({
         title: '',
@@ -168,7 +169,7 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
 
   const handleSubmit = async () => {
     const values = await form.validateFields();
-    if (mode === 'create') {
+    if (mode === 'light') {
       const payload: Omit<Bug, 'id' | 'createdAt'> = {
         title: values.title,
         description: values.description || '',
@@ -224,13 +225,15 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
           <Form.Item label="描述" name="description" style={{ marginBottom: 0 }}>
-            <MDEditor
-              value={form.getFieldValue('description')}
-              onChange={(v) => form.setFieldsValue({ description: v || '' })}
-              preview="edit"
-              height={ sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }
-              extraCommands={[]}
-            />
+            <div data-color-mode={mode}>
+              <MDEditor
+                value={form.getFieldValue('description')}
+                onChange={(v) => form.setFieldsValue({ description: v || '' })}
+                preview="edit"
+                height={ sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }
+                extraCommands={[]}
+              />
+            </div>
           </Form.Item>
         </div>
         <div ref={sideRef} style={{ width: 300, border: '1px solid var(--ant-color-border, #f0f0f0)', borderRadius: 8, padding: 12, overflow: 'auto' }}>

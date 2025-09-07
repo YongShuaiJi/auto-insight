@@ -1,9 +1,8 @@
 import React, { createContext, useContext } from 'react';
 
-// Create context for theme mode
 export interface ThemeModeContextType {
   /**
-   * 当前实际应用到 MUI 主题的模式，仅为 'light' | 'dark'
+   * 当前实际应用到主题的模式，仅为 'light' | 'dark'
    */
   mode: 'light' | 'dark';
   /**

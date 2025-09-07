@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, Button, LeftOutlined, RightOutlined } from '../ui';
+import { Menu, Button, LeftOutlined, RightOutlined, theme } from '../ui';
 
 export interface NavItem {
   id: string;
@@ -23,6 +23,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [collapsed, setCollapsed] = useState(true);
   const collapsedWidth = 64; // Width when collapsed
   const currentWidth = collapsed ? collapsedWidth : width;
+  const { token } = theme.useToken();
+  const zIndexToggle = token.zIndexPopupBase - 1;
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
@@ -38,8 +40,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             position: 'fixed',
             left: currentWidth - 16,
             top: 56,
-            zIndex: 1000,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+            zIndex: zIndexToggle,
+            backgroundColor: token.colorPrimary,
+            color: token.colorTextLightSolid
           }}
         />
 
