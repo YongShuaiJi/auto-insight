@@ -35,13 +35,13 @@ const Sidebar: React.FC<SidebarProps> = ({
           onClick={toggleCollapsed}
           type="text"
           shape="circle"
-          icon={collapsed ? <RightOutlined /> : <LeftOutlined />}
+          icon={collapsed ? <RightOutlined style={{ color: token.colorTextSecondary }} /> : <LeftOutlined style={{ color: token.colorTextSecondary }} />}
           style={{
             position: 'fixed',
             left: currentWidth - 16,
             top: 56,
             zIndex: zIndexToggle,
-            backgroundColor: token.colorPrimary,
+            backgroundColor: token.colorBgBase,
             color: token.colorTextLightSolid
           }}
         />
