@@ -18,6 +18,7 @@ import {
   Autocomplete,
   Chip,
   InputAdornment,
+  Stack,
   useTheme,
   ToggleButton,
   ToggleButtonGroup
@@ -46,7 +47,67 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+import updateLocale from 'dayjs/plugin/updateLocale';
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
+
+dayjs.extend(updateLocale);
+dayjs.updateLocale('zh-cn', {
+  monthsShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+  months:      ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+});
+dayjs.locale('zh-cn');
+
+// 自定义日历头部（年份在前、月份在后）
+// 使用 any 以兼容不同版本的 props 字段（onViewChange/view 在部分版本可用）
+const CustomCalendarHeader = (props: any) => {
+  const {
+    currentMonth,
+    onMonthChange,
+    onViewChange,
+    view,
+  } = props;
+
+  const handleTitleClick = () => {
+    if (onViewChange) {
+      // 标题点击：在 year/day 之间切换，优先进入 year 视图
+      onViewChange(view === 'year' ? 'day' : 'year');
+    }
+  };
+
+  return (
+    <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 2, pt: 1 }}>
+      <IconButton
+        aria-label="previous month"
+        onClick={() => onMonthChange(dayjs(currentMonth).subtract(1, 'month'))}
+        size="small"
+      >
+        <ChevronLeftIcon fontSize="small" />
+      </IconButton>
+
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <Typography
+          variant="subtitle1"
+          onClick={handleTitleClick}
+          sx={{ cursor: onViewChange ? 'pointer' : 'default', userSelect: 'none' }}
+        >
+          {dayjs(currentMonth).format('YYYY年M月')}
+        </Typography>
+      </Stack>
+
+      <IconButton
+        aria-label="next month"
+        onClick={() => onMonthChange(dayjs(currentMonth).add(1, 'month'))}
+        size="small"
+      >
+        <ChevronRightIcon fontSize="small" />
+      </IconButton>
+    </Stack>
+  );
+};
 
 // Enhanced Markdown editor component using @uiw/react-md-editor
 const MarkdownEditor: React.FC<{
@@ -571,7 +632,7 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
               />
 
               {/* Planned Start Date */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="zh-cn">
                 <DatePicker
                   label="计划开始时间"
                   value={plannedStartDate ? dayjs(plannedStartDate) : null}
@@ -584,7 +645,12 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   }}
                   views={['year', 'month', 'day']}
                   format="YYYY-MM-DD"
-                  disableOpenPicker
+                  slots={{
+                    calendarHeader: CustomCalendarHeader,
+                    // 隐藏“打开日期”的按钮与图标（替代 disableOpenPicker）
+                    openPickerButton: () => null,
+                    openPickerIcon:    () => null,
+                  }}
                   open={startPickerOpen}
                   onOpen={() => setStartPickerOpen(true)}
                   onClose={() => setStartPickerOpen(false)}
@@ -615,13 +681,19 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                           </InputAdornment>
                         ) : null,
                       },
-                    }
+                    },
+                    // 双保险：即使 slots 渲染了按钮，这里也强制隐藏
+                    openPickerButton: { sx: { display: 'none' } },
+                    popper: {
+                      // 下移 10px，避免遮住浮动标签
+                      modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+                    },
                   }}
                 />
               </LocalizationProvider>
 
               {/* Planned End Date */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="zh-cn">
                 <DatePicker
                   label="计划结束时间"
                   value={plannedEndDate ? dayjs(plannedEndDate) : null}
@@ -634,7 +706,12 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                   }}
                   views={['year', 'month', 'day']}
                   format="YYYY-MM-DD"
-                  disableOpenPicker
+                  slots={{
+                    calendarHeader: CustomCalendarHeader,
+                    // 隐藏“打开日期”的按钮与图标（替代 disableOpenPicker）
+                    openPickerButton: () => null,
+                    openPickerIcon:    () => null,
+                  }}
                   open={endPickerOpen}
                   onOpen={() => setEndPickerOpen(true)}
                   onClose={() => setEndPickerOpen(false)}
@@ -665,7 +742,13 @@ const NewBugModal: React.FC<NewBugModalProps> = ({
                           </InputAdornment>
                         ) : null,
                       },
-                    }
+                    },
+                    // 双保险：即使 slots 渲染了按钮，这里也强制隐藏
+                    openPickerButton: { sx: { display: 'none' } },
+                    popper: {
+                      // 下移 10px，避免遮住浮动标签
+                      modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+                    },
                   }}
                 />
               </LocalizationProvider>
