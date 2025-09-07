@@ -82,7 +82,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
               <span>{selectedProduct ? selectedProduct.name : '选择产品'}</span>
               <DownOutlined
                 style={{
-                  fontSize: '1.1rem',
+                  fontSize: '0.8rem',
                   transition: 'transform 0.2s',
                   transform: menuOpen ? 'rotate(180deg)' : 'rotate(0) scale(1)',
                   marginLeft: 8,
