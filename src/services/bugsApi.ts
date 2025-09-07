@@ -13,6 +13,7 @@ export interface Bug {
   priority: string;
   iteration: string;
   plannedStartDate: string;
+  plannedEndDate: string;
   completionDate: string;
   verifier: string;
   project: string;
@@ -82,7 +83,8 @@ const mockBugs: Bug[] = [
     cc: ['user4'],
     tags: ['UI', '前端'],
     notFixReason: '',
-    customNotFixReason: ''
+    customNotFixReason: '',
+    plannedEndDate: ""
   },
   {
     id: 'BUG-002',
@@ -104,7 +106,8 @@ const mockBugs: Bug[] = [
     cc: [],
     tags: ['API', '后端'],
     notFixReason: '',
-    customNotFixReason: ''
+    customNotFixReason: '',
+    plannedEndDate: ""
   },
   {
     id: 'BUG-003',
@@ -126,7 +129,8 @@ const mockBugs: Bug[] = [
     cc: ['user3'],
     tags: ['性能', '前端'],
     notFixReason: '',
-    customNotFixReason: ''
+    customNotFixReason: '',
+    plannedEndDate: ""
   }
 ];
 

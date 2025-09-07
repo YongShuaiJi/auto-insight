@@ -1,24 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Menu,
-  MenuItem,
-  FormControlLabel,
-  Switch,
-  CircularProgress
-} from "@mui/material";
-import { BugReport as BugReportIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import { Card, Typography, Button, Table, Menu, Dropdown, Switch, Spin, Space } from '../ui';
+import { BugOutlined, SettingOutlined } from '../ui';
 import type { Bug } from '../services/bugsApi';
 
 interface BugsTableProps {
@@ -53,111 +35,74 @@ const BugsTable: React.FC<BugsTableProps> = ({
   title = "缺陷列表",
   className = "bugs-table-card"
 }) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleSettingsClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Get visible columns in the order they are defined
   const visibleColumnDefs = columnDefinitions.filter(col => 
     visibleColumns.includes(col.id)
   );
 
+  const items = [
+    {
+      key: 'header',
+      label: (
+        <Typography.Text strong>显示/隐藏列</Typography.Text>
+      ),
+      disabled: true,
+    },
+    ...columnDefinitions.map((column) => ({
+      key: column.id,
+      label: (
+        <Space align="center" style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+          <span>{column.label}</span>
+          <Switch
+            size="small"
+            checked={visibleColumns.includes(column.id)}
+            onChange={() => onToggleColumn(column.id)}
+          />
+        </Space>
+      ),
+    }))
+  ];
+
+  const columns = visibleColumnDefs.map((col) => ({
+    title: col.label,
+    dataIndex: col.id,
+    key: col.id,
+  }));
+
   return (
     <Card className={className}>
-      <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton color="primary" aria-label="bugs list">
-              <BugReportIcon />
-            </IconButton>
-            <Typography variant="h6" gutterBottom sx={{ ml: 1, mb: 0 }}>
-              {title}
-            </Typography>
-          </Box>
-          <IconButton 
-            color="primary" 
-            aria-label="column settings"
-            onClick={handleSettingsClick}
-          >
-            <SettingsIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            PaperProps={{
-              style: {
-                maxHeight: 300,
-                width: '250px',
-                padding: '8px'
-              },
-            }}
-          >
-            <Typography variant="subtitle1" sx={{ px: 2, py: 1 }}>
-              显示/隐藏列
-            </Typography>
-            {columnDefinitions.map((column) => (
-              <MenuItem key={column.id} dense sx={{ py: 0 }}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={visibleColumns.includes(column.id)}
-                      onChange={() => onToggleColumn(column.id)}
-                      color="primary"
-                    />
-                  }
-                  label={column.label}
-                  sx={{ width: '100%' }}
-                />
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
-        
-        {isLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {visibleColumnDefs.map((column) => (
-                    <TableCell key={column.id}>{column.label}</TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {bugs.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={visibleColumnDefs.length} align="center">
-                      暂无数据
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  bugs.map((bug) => (
-                    <TableRow key={bug.id}>
-                      {visibleColumnDefs.map((column) => (
-                        <TableCell key={`${bug.id}-${column.id}`}>
-                          {bug[column.id as keyof Bug]}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </CardContent>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Button type="text" shape="circle" aria-label="bugs list" icon={<BugOutlined />} />
+          <Typography.Title level={4} style={{ margin: 0, marginLeft: 8 }}>
+            {title}
+          </Typography.Title>
+        </div>
+        <Dropdown
+          menu={{ items }}
+          trigger={["click"]}
+          open={menuOpen}
+          onOpenChange={setMenuOpen}
+        >
+          <Button type="text" shape="circle" aria-label="column settings" icon={<SettingOutlined />} />
+        </Dropdown>
+      </div>
+
+      {isLoading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
+          <Spin />
+        </div>
+      ) : (
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={bugs}
+          locale={{ emptyText: '暂无数据' }}
+          pagination={false}
+        />
+      )}
     </Card>
   );
 };

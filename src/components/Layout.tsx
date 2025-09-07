@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box, CssBaseline } from "@mui/material";
 import Header from './Header';
 import Sidebar, {type NavItem} from './Sidebar';
 import type { Product } from '../services/api.ts';
@@ -26,9 +25,7 @@ const Layout: React.FC<LayoutProps> = ({
   onProductSelect
 }) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <CssBaseline />
-
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* Header */}
       <Header 
         title={title} 
@@ -38,7 +35,7 @@ const Layout: React.FC<LayoutProps> = ({
       />
 
       {/* Main Content */}
-      <Box className="app-container">
+      <div className="app-container">
         {/* Sidebar */}
         <Sidebar 
           navItems={navItems} 
@@ -47,11 +44,11 @@ const Layout: React.FC<LayoutProps> = ({
         />
 
         {/* Main Content Area */}
-        <Box className="main-content">
+        <div className="main-content">
           {children}
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,13 +1,7 @@
 import React from 'react';
-import { Grid, Typography } from "@mui/material";
+import { Row, Col, Typography, DollarOutlined, ShoppingCartOutlined, UserOutlined, ShoppingOutlined } from '../ui';
 import SummaryCard from '../components/SummaryCard';
 import OrdersTable, {type Order} from '../components/OrdersTable';
-import {
-  MonetizationOn as MonetizationOnIcon,
-  ShoppingCart as ShoppingCartIcon,
-  Person as PersonIcon,
-  ShoppingBasket as ShoppingBasketIcon
-} from '@mui/icons-material';
 
 interface DashboardProps {
   recentOrders?: Order[];
@@ -26,49 +20,49 @@ const Dashboard: React.FC<DashboardProps> = ({ recentOrders = [] }) => {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom>
+      <Typography.Title level={4} style={{ marginBottom: 16 }}>
         概览
-      </Typography>
+      </Typography.Title>
 
-      <Grid container spacing={3}>
+      <Row gutter={[24, 24]}>
         {/* Summary Cards */}
-        <Grid size={{xs:12, sm:6, md:3}}>
+        <Col xs={24} sm={12} md={6}>
           <SummaryCard
             title="Total Sales"
             value="$12,345.67"
-            icon={<MonetizationOnIcon />}
+            icon={<DollarOutlined />}
           />
-        </Grid>
+        </Col>
 
-        <Grid size={{xs:12, sm:6, md:3}}>
+        <Col xs={24} sm={12} md={6}>
           <SummaryCard
             title="New Orders"
             value="25"
-            icon={<ShoppingCartIcon />}
+            icon={<ShoppingCartOutlined />}
           />
-        </Grid>
+        </Col>
 
-        <Grid size={{xs:12, sm:6, md:3}}>
+        <Col xs={24} sm={12} md={6}>
           <SummaryCard
             title="Total Customers"
             value="1,234"
-            icon={<PersonIcon />}
+            icon={<UserOutlined />}
           />
-        </Grid>
+        </Col>
 
-        <Grid size={{xs:12, sm:6, md:3}}>
+        <Col xs={24} sm={12} md={6}>
           <SummaryCard
             title="Products"
             value="567"
-            icon={<ShoppingBasketIcon />}
+            icon={<ShoppingOutlined />}
           />
-        </Grid>
+        </Col>
 
         {/* Recent Orders Table */}
-        <Grid size={{xs:12}}>
+        <Col xs={24}>
           <OrdersTable orders={orders} />
-        </Grid>
-      </Grid>
+        </Col>
+      </Row>
     </>
   );
 };

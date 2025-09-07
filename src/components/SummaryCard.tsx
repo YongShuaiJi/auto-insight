@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  IconButton,
-  Typography
-} from "@mui/material";
+import { Card, Typography, Button } from '../ui';
 
 interface SummaryCardProps {
   title: string;
@@ -22,19 +16,15 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
 }) => {
   return (
     <Card className={className}>
-      <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <IconButton color="primary" aria-label={title.toLowerCase()}>
-            {icon}
-          </IconButton>
-          <Typography color="textSecondary" gutterBottom sx={{ ml: 1, mb: 0 }}>
-            {title}
-          </Typography>
-        </Box>
-        <Typography variant="h5">
-          {value}
-        </Typography>
-      </CardContent>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+        <Button type="text" shape="circle" aria-label={title.toLowerCase()} icon={icon} />
+        <Typography.Text type="secondary" style={{ marginLeft: 8, marginBottom: 0 }}>
+          {title}
+        </Typography.Text>
+      </div>
+      <Typography.Title level={5} style={{ margin: 0 }}>
+        {value}
+      </Typography.Title>
     </Card>
   );
 };

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Typography } from "@mui/material";
+import { Typography } from '../ui';
 
 const Orders: React.FC = () => {
   return (
-    <Typography variant="h4">
+    <Typography.Title level={4}>
       Orders Management
-    </Typography>
+    </Typography.Title>
   );
 };
 

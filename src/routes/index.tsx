@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Dashboard as DashboardIcon,
-  People as PeopleIcon,
-  Receipt as ReceiptIcon,
-  Settings as SettingsIcon,
-  BugReport as BugReportIcon,
-} from '@mui/icons-material';
+import { HomeOutlined, UserOutlined, FileTextOutlined, SettingOutlined, BugOutlined } from '../ui';
 import Dashboard from '../pages/Dashboard';
 import Users from '../pages/Users';
 import Orders from '../pages/Orders';
@@ -27,35 +21,35 @@ const routes: Route[] = [
     id: 'dashboard',
     path: '/',
     label: '仪表盘',
-    icon: <DashboardIcon />,
+    icon: <HomeOutlined />,
     component: Dashboard
   },
   {
     id: 'bugs',
     path: '/bugs',
     label: '缺陷',
-    icon: <BugReportIcon />,
+    icon: <BugOutlined />,
     component: Bugs
   },
   {
     id: 'orders',
     path: '/orders',
     label: 'Orders',
-    icon: <ReceiptIcon />,
+    icon: <FileTextOutlined />,
     component: Orders
   },
   {
     id: 'users',
     path: '/users',
     label: 'Users',
-    icon: <PeopleIcon />,
+    icon: <UserOutlined />,
     component: Users
   },
   {
     id: 'settings',
     path: '/settings',
     label: 'Settings',
-    icon: <SettingsIcon />,
+    icon: <SettingOutlined />,
     component: Settings
   }
 ];
@@ -99,6 +93,7 @@ export const renderRouteById = (id: string): React.ReactNode => {
     return <Component />;
   } catch (error) {
     console.error('Error in renderRouteById:', error);
-    return <div style={{ color: 'red' }}>Error rendering route: {error.message}</div>;
+    const message = error instanceof Error ? error.message : String(error);
+    return <div style={{ color: 'red' }}>Error rendering route: {message}</div>;
   }
 };

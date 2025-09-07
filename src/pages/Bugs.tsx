@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Button } from "@mui/material";
-import { Add as AddIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import { Typography, Button } from '../ui';
+import { PlusOutlined } from '../ui';
 import BugsTable from '../components/BugsTable';
-import NewBugModal from '../components/NewBugModal';
+import NewBugModal from '../components/BugModal';
 import { fetchBugs, createBug } from '../services/bugsApi';
 import type { Bug } from '../services/bugsApi';
 
@@ -57,18 +57,18 @@ const Bugs: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h4">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <Typography.Title level={2} style={{ margin: 0 }}>
           缺陷
-        </Typography>
+        </Typography.Title>
         <Button 
-          variant="contained" 
-          startIcon={<AddIcon />}
+          type="primary"
+          icon={<PlusOutlined />}
           onClick={() => setIsNewBugModalOpen(true)}
         >
           新建
         </Button>
-      </Box>
+      </div>
 
       <BugsTable 
         bugs={bugs} 
