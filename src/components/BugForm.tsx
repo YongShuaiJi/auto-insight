@@ -224,21 +224,18 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
 
       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
-          <Form.Item label="描述" name="description" style={{ marginBottom: 0 }}>
-            <div data-color-mode={mode} className="md-editor-wrapper">
-              <MDEditor
-                value={form.getFieldValue('description')}
-                onChange={(v) => form.setFieldsValue({ description: v || '' })}
-                preview="edit"
-                height={ sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }
-                commandsFilter={(command) => {
-                  const cmd = command as Record<string, unknown>;
-                  const name = (typeof cmd.name === 'string' ? (cmd.name as string) : (typeof cmd.keyCommand === 'string' ? (cmd.keyCommand as string) : undefined));
-                  return name === 'help' || name === 'open_help' || name === 'open-help' ? false : command;
-                }}
-                extraCommands={[]}
-              />
-            </div>
+          <Form.Item label="描述" name="description" style={{ marginBottom: 0 }} valuePropName="value" getValueFromEvent={(v) => v ?? ''}>
+            <MDEditor
+              data-color-mode={mode}
+              preview="edit"
+              height={ sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }
+              commandsFilter={(command) => {
+                const cmd = command as Record<string, unknown>;
+                const name = (typeof cmd.name === 'string' ? (cmd.name as string) : (typeof cmd.keyCommand === 'string' ? (cmd.keyCommand as string) : undefined));
+                return name === 'help' || name === 'open_help' || name === 'open-help' ? false : command;
+              }}
+              extraCommands={[]}
+            />
           </Form.Item>
         </div>
         <div ref={sideRef} style={{ width: 300, border: '1px solid var(--ant-color-border, #f0f0f0)', borderRadius: 8, padding: 12, overflow: 'auto' }}>

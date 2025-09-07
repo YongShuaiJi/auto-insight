@@ -35,17 +35,3 @@ h1 {
   line-height: 1.1;
 }
 
-/* Enlarge icons in the Markdown editor toolbar (scoped) */
-.md-editor-wrapper .w-md-editor .w-md-editor-toolbar li > button svg,
-.md-editor-wrapper .w-md-editor .w-md-editor-toolbar li > button i svg {
-  width: 0.8em;
-  height: 0.8em;
-}
-
-/* Slightly increase button size to match larger icons */
-.md-editor-wrapper .w-md-editor .w-md-editor-toolbar li > button {
-  min-width: 24px;
-  min-height: 24px;
-}
-
-
