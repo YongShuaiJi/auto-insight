@@ -225,12 +225,17 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
           <Form.Item label="描述" name="description" style={{ marginBottom: 0 }}>
-            <div data-color-mode={mode}>
+            <div data-color-mode={mode} className="md-editor-wrapper">
               <MDEditor
                 value={form.getFieldValue('description')}
                 onChange={(v) => form.setFieldsValue({ description: v || '' })}
                 preview="edit"
                 height={ sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }
+                commandsFilter={(command) => {
+                  const cmd = command as Record<string, unknown>;
+                  const name = (typeof cmd.name === 'string' ? (cmd.name as string) : (typeof cmd.keyCommand === 'string' ? (cmd.keyCommand as string) : undefined));
+                  return name === 'help' || name === 'open_help' || name === 'open-help' ? false : command;
+                }}
                 extraCommands={[]}
               />
             </div>

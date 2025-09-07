@@ -18,7 +18,7 @@ const BugDrawer: React.FC<BugDrawerProps> = ({ open, bug, onClose, onSubmit, isL
     <Drawer
       title={<Space><Typography.Text strong>缺陷详情</Typography.Text></Space>}
       placement="right"
-      width={1000}
+      width={1200}
       open={open}
       onClose={onClose}
       extra={<Space><Typography.Link onClick={() => formRef.current?.submit()}>{isLoading ? '保存中...' : '保存'}</Typography.Link></Space>}
