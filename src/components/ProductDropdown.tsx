@@ -3,6 +3,7 @@ import { Button, Dropdown, DownOutlined } from '../ui';
 import { fetchProducts } from '../services/api.ts';
 import type { Product } from "../services/api.ts";
 import { useThemeMode } from '../theme/ThemeModeContext';
+import {Tooltip} from "antd";
 
 
 interface ProductDropdownProps {
@@ -65,6 +66,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
             })),
           }}
         >
+          <Tooltip title={""}>
           <Button
               type="text"
               onClick={() => setMenuOpen((v) => !v)}
@@ -88,6 +90,7 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
                 }}
               />
             </Button>
+          </Tooltip>
         </Dropdown>
       </div>
   );
