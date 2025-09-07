@@ -4,7 +4,7 @@ import { Typography } from '../ui';
 const Users: React.FC = () => {
   return (
     <Typography.Title level={4}>
-      Users Management
+      用户管理
     </Typography.Title>
   );
 };
