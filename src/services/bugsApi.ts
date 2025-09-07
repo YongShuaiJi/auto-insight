@@ -201,6 +201,20 @@ export const createBug = async (bugData: Omit<Bug, 'id' | 'createdAt'>): Promise
   });
 };
 
+export const updateBug = async (bug: Bug): Promise<Bug> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const idx = mockBugs.findIndex(b => b.id === bug.id);
+      if (idx === -1) {
+        reject(new Error('Bug not found'));
+        return;
+      }
+      mockBugs[idx] = { ...mockBugs[idx], ...bug };
+      resolve(mockBugs[idx]);
+    }, 400);
+  });
+};
+
 export const fetchUsers = async (): Promise<User[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {

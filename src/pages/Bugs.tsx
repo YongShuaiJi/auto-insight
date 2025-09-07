@@ -3,13 +3,16 @@ import { Typography, Button } from '../ui';
 import { PlusOutlined } from '../ui';
 import BugsTable from '../components/BugsTable';
 import NewBugModal from '../components/BugModal';
-import { fetchBugs, createBug } from '../services/bugsApi';
+import BugDrawer from '../components/BugDrawer';
+import { fetchBugs, createBug, updateBug } from '../services/bugsApi';
 import type { Bug } from '../services/bugsApi';
 
 const Bugs: React.FC = () => {
   const [bugs, setBugs] = useState<Bug[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewBugModalOpen, setIsNewBugModalOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedBug, setSelectedBug] = useState<Bug | null>(null);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([
     'id', 'title', 'status', 'assignee', 'creator', 'createdAt', 'type', 
     'priority', 'iteration', 'plannedStartDate', 'completionDate'
@@ -75,6 +78,7 @@ const Bugs: React.FC = () => {
         isLoading={isLoading} 
         visibleColumns={visibleColumns}
         onToggleColumn={handleToggleColumn}
+        onRowClick={(bug) => { setSelectedBug(bug); setIsDrawerOpen(true); }}
       />
 
       <NewBugModal 
@@ -82,6 +86,26 @@ const Bugs: React.FC = () => {
         onClose={() => setIsNewBugModalOpen(false)}
         onSubmit={handleCreateBug}
         isLoading={isLoading}
+      />
+
+      <BugDrawer
+        open={isDrawerOpen}
+        bug={selectedBug}
+        onClose={() => { setIsDrawerOpen(false); setSelectedBug(null); }}
+        isLoading={isLoading}
+        onSubmit={async (updated) => {
+          setIsLoading(true);
+          try {
+            await updateBug(updated);
+            await fetchBugsData();
+            setIsDrawerOpen(false);
+            setSelectedBug(null);
+          } catch (e) {
+            console.error('Error updating bug:', e);
+          } finally {
+            setIsLoading(false);
+          }
+        }}
       />
     </>
   );

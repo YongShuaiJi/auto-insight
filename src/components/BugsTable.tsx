@@ -10,6 +10,7 @@ interface BugsTableProps {
   onToggleColumn: (columnName: string) => void;
   title?: string;
   className?: string;
+  onRowClick?: (bug: Bug) => void;
 }
 
 // Column definitions with display names
@@ -33,7 +34,8 @@ const BugsTable: React.FC<BugsTableProps> = ({
   visibleColumns,
   onToggleColumn,
   title = "缺陷列表",
-  className = "bugs-table-card"
+  className = "bugs-table-card",
+  onRowClick
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -101,6 +103,9 @@ const BugsTable: React.FC<BugsTableProps> = ({
           dataSource={bugs}
           locale={{ emptyText: '暂无数据' }}
           pagination={false}
+          onRow={(record) => ({
+            onClick: () => onRowClick && onRowClick(record as Bug)
+          })}
         />
       )}
     </Card>
