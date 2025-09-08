@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: token.colorBgContainer, borderBottom: `1px solid ${token.colorBorderSecondary}` }}>
       <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px', color: token.colorText }}>
-        <Button type="text" shape="circle" aria-label="AI testing hub" icon={<BulbTwoTone />} />
+        <Button type="text" shape="circle" aria-label="AI testing hub" icon={<BulbTwoTone style={{ fontSize: 20 }} />} />
         <Typography.Title level={5} style={{ margin: '0 8px' }}>
           {title}
         </Typography.Title>
