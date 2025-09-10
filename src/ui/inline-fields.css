@@ -1,0 +1,41 @@
+/* 通用：侧栏容器卡片 */
+.side-card {
+  width: 480px;
+  border: 1px solid var(--ant-color-border, #f0f0f0);
+  border-radius: 8px;
+  padding: 12px;
+  overflow: auto;
+}
+
+/* 通用：侧栏标题 */
+.side-card-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* 通用：行内字段区域（纵向堆叠每一行） */
+.inline-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 通用：单行行内字段（标签+控件） */
+.inline-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 通用：字段标签 */
+.inline-label {
+  width: 96px; /* 可按需调整固定宽度以实现对齐 */
+  text-align: right;
+  color: var(--ant-color-text-secondary, rgba(0, 0, 0, 0.45));
+  white-space: nowrap;
+}
+
+/* 通用：字段控件容器（配合 antd Form.Item 使用） */
+.inline-control {
+  flex: 1;
+}

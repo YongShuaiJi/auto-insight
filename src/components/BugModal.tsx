@@ -23,6 +23,7 @@ const BugModal: React.FC<BugModalProps> = ({ open, onClose, onSubmit, isLoading 
       confirmLoading={isLoading}
       destroyOnClose
       width={1500}
+      centered
     >
       <BugForm
         ref={formRef}
