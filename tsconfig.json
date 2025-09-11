@@ -24,8 +24,7 @@
   },
   "include": [
     "src",
-    "types",
-    "node_modules/@uiw/react-md-editor/src"
+    "types"
   ],
   "exclude": ["node_modules", "dist"],
 //  "include": ["src", "node_modules/@uiw/react-md-editor/src"],

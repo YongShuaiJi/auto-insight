@@ -1,11 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { Form, Input, Select, DatePicker, Typography, Segmented } from 'antd';
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
 import { fetchUsers, fetchProjects, fetchIterations, fetchPriorities, fetchSeverities, fetchBugTypes, fetchNotFixReasons } from '../services/bugsApi';
-import MDEditor from '@uiw/react-md-editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 import dayjs, { Dayjs } from 'dayjs';
 import { useThemeMode } from '../theme/ThemeModeContext';
 import '../ui/inline-fields.css';
+import Editor from "@toast-ui/editor";
 
 export type BugFormMode = 'create' | 'edit';
 
@@ -56,13 +58,57 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
   const [form] = Form.useForm<BugFormValues>();
   const { mode } = useThemeMode();
 
+  // 侧栏引用与高度（需在依赖它们的 effect 之前声明）
+  const sideRef = useRef<HTMLDivElement | null>(null);
+  const [sideHeight, setSideHeight] = useState<number>(300);
+
   // 编辑器预览模式：create => 默认编辑；其余（如详情/编辑）=> 默认预览
-  const [mdPreview, setMdPreview] = useState<'edit' | 'preview'>(formMode === 'create' ? 'edit' : 'preview');
+  // Mount container and core Editor instance
+  const editorContainerRef = useRef<HTMLDivElement | null>(null);
+  const editorInstanceRef = useRef<Editor | null>(null);
+
+  // Initialize or re-create editor when opened and when theme/height changes
   useEffect(() => {
-    if (open) {
-      setMdPreview(formMode === 'create' ? 'edit' : 'preview');
+    if (!open) return;
+    const container = editorContainerRef.current;
+    if (!container) return;
+
+    // Destroy existing instance if any (e.g., theme/height change)
+    if (editorInstanceRef.current) {
+      editorInstanceRef.current.destroy();
+      editorInstanceRef.current = null;
     }
-  }, [open, formMode]);
+
+    const initialValue = (form.getFieldValue('description') as string) || '';
+
+    // Create core Editor
+    const instance = new Editor({
+      el: container,
+      initialEditType: 'markdown',
+      previewStyle: 'vertical',
+      hideModeSwitch: false,
+      theme: mode === 'dark' ? 'dark' : undefined,
+      height: sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) + 'px' : '400px',
+      usageStatistics: false,
+      autofocus: formMode === 'create',
+      initialValue,
+    });
+
+    // Sync changes & apply WYSIWYG 输入规则增强
+    instance.on('change', () => {
+      const md = instance.getMarkdown();
+      form.setFieldsValue({ description: md });
+    });
+
+    editorInstanceRef.current = instance;
+
+    return () => {
+      if (editorInstanceRef.current) {
+        editorInstanceRef.current.destroy();
+        editorInstanceRef.current = null;
+      }
+    };
+  }, [open, mode, sideHeight, sidePanelAutoHeight, formMode]);
 
   // Options
   const [users, setUsers] = useState<User[]>([]);
@@ -106,6 +152,18 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
     };
     fetchOptions();
   }, [open]);
+
+  // keep editor synced when description value changes (when changes come from outside editor)
+  const descriptionValue = Form.useWatch('description', form);
+  useEffect(() => {
+    if (!open) return;
+    const inst = editorInstanceRef.current;
+    if (inst && typeof descriptionValue === 'string') {
+      if (inst.getMarkdown() !== descriptionValue) {
+        inst.setMarkdown(descriptionValue);
+      }
+    }
+  }, [descriptionValue, open]);
 
   // init/reset values
   useEffect(() => {
@@ -161,8 +219,7 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
     }
   }, [selectedNotFix, notFixReasons, form]);
 
-  const sideRef = useRef<HTMLDivElement | null>(null);
-  const [sideHeight, setSideHeight] = useState<number>(300);
+  // sideRef 与 sideHeight 已提前声明，避免在声明前被使用的类型错误
   useEffect(() => {
     if (!open || !sidePanelAutoHeight) return;
     const min = 300;
@@ -233,36 +290,13 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
 
       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
-          <div style={{ position: 'relative'}}>
-            <div style={{ position: 'absolute', right: 8, top: 0, zIndex: 2 }}>
-              <Segmented
-                size="small"
-                value={mdPreview}
-                onChange={(val) => setMdPreview(val as 'edit' | 'preview')}
-                options={[
-                  { label: '编辑', value: 'edit' },
-                  { label: '预览', value: 'preview' },
-                ]}
-              />
-            </div>
-            <Form.Item
-              label="描述"
-              name="description"
-              style={{ marginBottom: 0 }}
-              valuePropName="value"
-              getValueFromEvent={(v) => v ?? ''}
-            >
-              <MDEditor
-                data-color-mode={mode}
-                preview={mdPreview}
-                height={ sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }
-                commandsFilter={(command) => {
-                  const cmd = command as Record<string, unknown>;
-                  const name = (typeof cmd.name === 'string' ? (cmd.name as string) : (typeof cmd.keyCommand === 'string' ? (cmd.keyCommand as string) : undefined));
-                  return name === 'help' || name === 'open_help' || name === 'open-help' ? false : command;
-                }}
-                extraCommands={[]}
-              />
+          <div>
+            <Form.Item label="描述" style={{ marginBottom: 8 }}>
+              {/* Hidden field to bind editor content to form */}
+              <Form.Item name="description" noStyle>
+                <Input type="hidden" />
+              </Form.Item>
+              <div ref={editorContainerRef} />
             </Form.Item>
           </div>
         </div>
