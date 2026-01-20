@@ -39,3 +39,123 @@
 .inline-control {
   flex: 1;
 }
+
+/* Crepe 编辑器外框 */
+.crepe-editor-frame {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ant-color-border, #d9d9d9);
+  border-radius: 8px;
+  background: var(--ant-color-bg-container, #ffffff);
+  overflow: hidden; /* 裁切内层溢出 */
+  padding: 0;       /* 移除外框内边距，避免顶部留白 */
+}
+
+/* Crepe 编辑器主体容器（实际挂载点） */
+.crepe-editor-body {
+  flex: 1;
+  min-height: 240px; /* 给一个较友好的最小高度 */
+  width: 100%;
+  height: 100%;
+  padding: 0;        /* 移除主体容器内边距，避免偏移 */
+  margin: 0;
+}
+
+/* 使 Milkdown/ProseMirror 填满容器并从左上角开始 */
+.crepe-editor-body > * {
+  height: 100%;
+  width: 100%;
+}
+
+/* Milkdown 根容器通常带有 .milkdown 类 */
+.crepe-editor-body .milkdown {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;     /* 让编辑区顶对齐占满 */
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ProseMirror 编辑区域 */
+.crepe-editor-body .milkdown .ProseMirror {
+  flex: 1;
+  min-height: 100%;
+  padding: 8px 12px;          /* 仅保留轻微内边距，文本紧贴左上角显示 */
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+
+  /* Apple 优先的正文字体族，含常见中西文回退 */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Helvetica Neue", Helvetica, Arial,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+    "Segoe UI", Roboto, sans-serif;
+}
+
+/* 标题采用系统 UI 字体并加粗（靠字号与字重区分层级，贴近 Typora） */
+.crepe-editor-body .milkdown .ProseMirror h1,
+.crepe-editor-body .milkdown .ProseMirror h2,
+.crepe-editor-body .milkdown .ProseMirror h3,
+.crepe-editor-body .milkdown .ProseMirror h4,
+.crepe-editor-body .milkdown .ProseMirror h5,
+.crepe-editor-body .milkdown .ProseMirror h6 {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Helvetica Neue", Helvetica, Arial,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+    "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+}
+
+/* 代码与代码块采用等宽字体（跨平台回退），贴近 Typora */
+.crepe-editor-body .milkdown .ProseMirror code,
+.crepe-editor-body .milkdown .ProseMirror pre,
+.crepe-editor-body .milkdown .ProseMirror pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
+}
+
+/* 其他常见块级元素继承正文字体，保持统一风格 */
+.crepe-editor-body .milkdown .ProseMirror blockquote,
+.crepe-editor-body .milkdown .ProseMirror ul,
+.crepe-editor-body .milkdown .ProseMirror ol,
+.crepe-editor-body .milkdown .ProseMirror table,
+.crepe-editor-body .milkdown .ProseMirror th,
+.crepe-editor-body .milkdown .ProseMirror td {
+  font-family: inherit;
+}
+
+/* 去掉第一块内容的额外顶部间距 */
+.crepe-editor-body .milkdown .ProseMirror > *:first-child {
+  margin-top: 0 !important;
+}
+
+/* 聚焦时不显示默认 outline（按需） */
+.crepe-editor-body .milkdown .ProseMirror:focus-visible {
+  outline: none;
+}
+
+/* 隐藏“跟随光标”的占位提示（如 Please enter） */
+.crepe-editor-body [data-placeholder]::before,
+.crepe-editor-body .milkdown [data-placeholder]::before,
+.crepe-editor-body .milkdown .is-editor-empty::before,
+.crepe-editor-body .milkdown .is-empty::before {
+  content: '' !important;
+  display: none !important;
+}
+
+/* 隐藏 Milkdown/Crepe 选区浮动工具条（tooltip/bubble menu） */
+.crepe-editor-body .milkdown [class*="tooltip"],
+.crepe-editor-body .milkdown [data-type="tooltip"],
+.crepe-editor-body .milkdown .crepe-tooltip,
+.crepe-editor-body .milkdown .selection-tooltip,
+.crepe-editor-body .milkdown .link-tooltip {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

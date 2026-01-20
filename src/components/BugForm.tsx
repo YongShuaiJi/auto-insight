@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { Form, Input, Select, DatePicker, Typography, Segmented } from 'antd';
+import { Form, Input, Select, DatePicker } from 'antd';
 import type { Bug, User, Project, Iteration, Priority, Severity, BugType, NotFixReason } from '../services/bugsApi';
 import { fetchUsers, fetchProjects, fetchIterations, fetchPriorities, fetchSeverities, fetchBugTypes, fetchNotFixReasons } from '../services/bugsApi';
-import '@toast-ui/editor/dist/toastui-editor.css';
-import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 import dayjs, { Dayjs } from 'dayjs';
 import { useThemeMode } from '../theme/ThemeModeContext';
 import '../ui/inline-fields.css';
-import Editor from "@toast-ui/editor";
+import { Crepe } from '@milkdown/crepe';
+import '@milkdown/crepe/theme/common/style.css';
+import '@milkdown/crepe/theme/frame.css';
 
 export type BugFormMode = 'create' | 'edit';
 
@@ -46,6 +46,87 @@ interface BugFormProps {
 
 const { TextArea } = Input;
 
+type AppearanceMode = 'light' | 'dark';
+
+const InnerCrepeEditor: React.FC<{
+  appearance: AppearanceMode;
+  onChange?: (md: string) => void;
+  readOnly?: boolean;
+}> = ({ appearance, onChange, readOnly }) => {
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
+  const crepeRef = React.useRef<InstanceType<typeof Crepe> | null>(null);
+
+  React.useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    // 动态禁用所有可能导致“选区浮窗/气泡工具栏”的特性（兼容 symbol/string/number 键）
+    const featuresCfg: Partial<Record<PropertyKey, boolean>> = {};
+    const disable = (key: unknown) => {
+      if (typeof key === 'string' || typeof key === 'number' || typeof key === 'symbol') {
+        featuresCfg[key] = false;
+      }
+    };
+    disable(Crepe.Feature.LinkTooltip);
+
+    // 不同版本可能使用的键名，存在即禁用
+    const FeatureEnum = Crepe.Feature as unknown as Record<string, unknown>;
+    [
+      'FormatTooltip',
+      'SelectionTooltip',
+      'InlineMenu',
+      'InlineToolbar',
+      'FormatFloating',
+      'TextSelectionToolbar',
+    ].forEach((name) => {
+      disable(FeatureEnum[name]);
+    });
+
+    const crepe = new Crepe({
+      root
+    });
+    crepeRef.current = crepe;
+
+    crepe.create().then(() => {
+      // 可选：通过容器属性标记外观，便于样式差异化（如需）
+      try {
+        root.setAttribute('data-appearance', appearance);
+      } catch {
+        // ignore
+      }
+
+      if (typeof readOnly === 'boolean') {
+        crepe.setReadonly(!!readOnly);
+      }
+      // 监听变更：将最新 Markdown 回传
+      crepe.on(() => {
+        try {
+          const md = crepe.getMarkdown?.() ?? '';
+          onChange?.(md);
+        } catch {
+          // ignore
+        }
+      });
+    });
+
+    return () => {
+      try {
+        crepe.destroy();
+      } catch {
+        // ignore
+      } finally {
+        crepeRef.current = null;
+      }
+    };
+  }, [appearance, readOnly, onChange]);
+
+  return (
+    <div className="crepe-editor-frame" data-appearance={appearance}>
+      <div className="crepe-editor-body" ref={rootRef} />
+    </div>
+  );
+};
+
 const BugForm = forwardRef<BugFormRef, BugFormProps>(({
   open,
   initialBug,
@@ -62,53 +143,8 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
   const sideRef = useRef<HTMLDivElement | null>(null);
   const [sideHeight, setSideHeight] = useState<number>(300);
 
-  // 编辑器预览模式：create => 默认编辑；其余（如详情/编辑）=> 默认预览
-  // Mount container and core Editor instance
-  const editorContainerRef = useRef<HTMLDivElement | null>(null);
-  const editorInstanceRef = useRef<Editor | null>(null);
-
-  // Initialize or re-create editor when opened and when theme/height changes
-  useEffect(() => {
-    if (!open) return;
-    const container = editorContainerRef.current;
-    if (!container) return;
-
-    // Destroy existing instance if any (e.g., theme/height change)
-    if (editorInstanceRef.current) {
-      editorInstanceRef.current.destroy();
-      editorInstanceRef.current = null;
-    }
-
-    const initialValue = (form.getFieldValue('description') as string) || '';
-
-    // Create core Editor
-    const instance = new Editor({
-      el: container,
-      initialEditType: 'markdown',
-      previewStyle: 'vertical',
-      hideModeSwitch: false,
-      theme: mode === 'dark' ? 'dark' : undefined,
-      height: sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) + 'px' : '400px',
-      usageStatistics: false,
-      autofocus: formMode === 'create',
-      initialValue,
-    });
-
-    // Sync changes & apply WYSIWYG 输入规则增强
-    instance.on('change', () => {
-      const md = instance.getMarkdown();
-      form.setFieldsValue({ description: md });
-    });
-
-    editorInstanceRef.current = instance;
-
-    return () => {
-      if (editorInstanceRef.current) {
-        editorInstanceRef.current.destroy();
-        editorInstanceRef.current = null;
-      }
-    };
-  }, [open, mode, sideHeight, sidePanelAutoHeight, formMode]);
+  // Milkdown does not require manual instance management here.
+  // We keep sideHeight to control container height for consistent layout.
 
   // Options
   const [users, setUsers] = useState<User[]>([]);
@@ -153,17 +189,7 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
     fetchOptions();
   }, [open]);
 
-  // keep editor synced when description value changes (when changes come from outside editor)
-  const descriptionValue = Form.useWatch('description', form);
-  useEffect(() => {
-    if (!open) return;
-    const inst = editorInstanceRef.current;
-    if (inst && typeof descriptionValue === 'string') {
-      if (inst.getMarkdown() !== descriptionValue) {
-        inst.setMarkdown(descriptionValue);
-      }
-    }
-  }, [descriptionValue, open]);
+  // Milkdown editor value is controlled via props below; no imperative sync needed here.
 
   // init/reset values
   useEffect(() => {
@@ -292,11 +318,18 @@ const BugForm = forwardRef<BugFormRef, BugFormProps>(({
         <div style={{ flex: 1 }}>
           <div>
             <Form.Item label="描述" style={{ marginBottom: 8 }}>
-              {/* Hidden field to bind editor content to form */}
               <Form.Item name="description" noStyle>
                 <Input type="hidden" />
               </Form.Item>
-              <div ref={editorContainerRef} />
+              <div style={{ height: sidePanelAutoHeight ? Math.max(300, Math.round(sideHeight)) : 400 }}>
+                <InnerCrepeEditor
+                  appearance={mode === 'dark' ? 'dark' : 'light'}
+                  readOnly={false}
+                  onChange={(md) => {
+                    form.setFieldsValue({ description: md || '' });
+                  }}
+                />
+              </div>
             </Form.Item>
           </div>
         </div>
